@@ -9,6 +9,7 @@ public class GeneticTrainer {
 
     public GeneticTrainer(int networks, FitnessFunction func) {
         this.networks = new NeuralNetwork[networks];
+        this.func = func;
     }
 
     public void addLayer(int inputs, int outputs) {
