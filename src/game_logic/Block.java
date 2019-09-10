@@ -54,18 +54,36 @@ public class Block {
             },
     };
 
-    public Block () {
-
-    }
-
-
     private int type;
     private int rotation;
     private int[] position;
 
+
+    public Block (int pType) {
+        type = pType;
+        rotation = 0;
+        position = new int[2];
+    }
+
+
     public void setPosition(int[] position){ this.position = position; }
+    public void setPosition(int xPosition, int yPosition){ this.position = new int[]{xPosition, yPosition}; }
 
-    public int[][] getCells(){
+    public void setRotation(int pRotation){ this.rotation = pRotation; this.rotation = this.rotation % 4; }
 
+
+    public int[] getPosition(){ return this.position; }
+
+    public int getRotation(){ return this.rotation; }
+
+
+    public int[][] getAbsoluteCells(){
+        int[][] absoluteCells = blockStates[type][rotation];
+        for (int i = 0; i < absoluteCells.length; i++) {
+            for (int j = 0; j < absoluteCells[0].length; j++) {
+                absoluteCells[i][j] += position[j];
+            }
+        }
+        return absoluteCells;
     }
 }
