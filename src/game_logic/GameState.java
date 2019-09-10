@@ -44,24 +44,64 @@ public class GameState {
     public void applyAction(Action pAction){
         switch (pAction){
             case NOTHING: break;
-            case LEFT: if(this.checkActionValid(pAction)) currentBlock.setPosition(currentBlock.getPosition()[0] - 1, currentBlock.getPosition()[1]); break;
-            case RIGHT: if(this.checkActionValid(pAction)) currentBlock.setPosition(currentBlock.getPosition()[0] + 1, currentBlock.getPosition()[1]); break;
-            case DOWN: if(this.checkActionValid(pAction)) currentBlock.setPosition(currentBlock.getPosition()[0], currentBlock.getPosition()[1] - 1); break;
-            case TURN_LEFT: if(this.checkActionValid(pAction)) currentBlock.rotateLeft(); break;
-            case TURN_RIGHT: if(this.checkActionValid(pAction)) currentBlock.rotateRight(); break;
+            case LEFT: moveIfValid(-1, 0, 0); break;
+            case RIGHT:  moveIfValid(1, 0, 0); break;
+            case TURN_LEFT: moveIfValid(0, 0, -1); break;
+            case TURN_RIGHT: moveIfValid(0, 0, 1); break;
+            case DOWN: {
+                boolean moved = moveIfValid(0, -1, 0);
+
+                if(!moved) {
+                    placeBlock();
+
+                    // spawn?
+                }
+
+                break;
+            }
         }
     }
 
-    public boolean isValid(){
-        return True;
+    public void placeBlock(){
+
     }
 
-    public boolean checkActionValid(Action pAction){
-        return True;
+
+    public boolean moveIfValid(int dx, int dy, int dr){
+        int[] oldPosition = currentBlock.getPosition();
+        int[] newPosition = new int[]{oldPosition[0] + dx, oldPosition[1] + dy};
+
+        int oldRotation = currentBlock.getRotation();
+
+        currentBlock.setRotation((oldRotation + dr) % 4);
+        currentBlock.setPosition(newPosition);
+
+        int[][] cells = currentBlock.getAbsoluteCells();
+
+        if(detectCollision(cells)){
+            // the move is invalid and the current block should not be updated
+            currentBlock.setPosition(oldPosition);
+            currentBlock.setRotation(oldRotation);
+
+            return false;
+        }
+
+        return true;
     }
 
-    public boolean detectCollision(){
+    public boolean detectCollision(int[][] cells){
+        for(int[] cell : cells){
+            int x = cell[0];
+            int y = cell[1];
 
+            if(x < 0 || x >= state.length) return false;
+            if(y < 0 || y >= state[0].length) return false;
+
+
+            if(state[x][y] != 0) return false;
+        }
+
+        return true;
     }
 
     public int[][] simplifyState(){
