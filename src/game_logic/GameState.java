@@ -1,3 +1,5 @@
+package game_logic;
+
 import java.util.Random;
 
 public class GameState {
