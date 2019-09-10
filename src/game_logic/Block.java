@@ -54,6 +54,10 @@ public class Block {
             },
     };
 
+    public int getType() {
+        return type;
+    }
+
     private int type;
     private int rotation;
     private int[] position;

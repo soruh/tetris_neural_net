@@ -11,7 +11,7 @@ public class GameState {
     private boolean terminated;
     private long score;
 
-    Random r;
+    Random rng;
 
     public GameState(long pRandomSeed){
         state = new int[22][10];
@@ -19,7 +19,11 @@ public class GameState {
         score = 0;
         terminated = false;
 
-        r = new Random(pRandomSeed);
+        rng = new Random(pRandomSeed);
+
+        currentBlock = randomBlock();
+        currentBlock.setPosition(startPosition);
+        nextBlock = randomBlock();
     }
 
 
@@ -50,8 +54,26 @@ public class GameState {
         }
     }
 
-    public void placeBlock(){
+    private Block randomBlock(){
+        return new Block(rng.nextInt(7));
+    }
 
+    public void spawn (int pBlock){
+        currentBlock = nextBlock;
+        currentBlock.setPosition(this.startPosition);
+
+        nextBlock = randomBlock();
+    }
+
+    public void placeBlock() {
+        int[][] cells = currentBlock.getAbsoluteCells();
+
+        for (int[] cell : cells) {
+            int x = cell[0];
+            int y = cell[1];
+
+            this.state[x][y] = currentBlock.getType();
+        }
     }
 
 
