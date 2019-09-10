@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class GameState {
 
-    private int[][] screen, nextScreen;
+    private int[][] state, previousState;
     private int currentBlock, nextBlock;
     private long ticks;
 
@@ -17,7 +17,7 @@ public class GameState {
         r = new Random(pRandomSeed);
     }
 
-    public void tick(Action pAction){
+    /*public void tick(Action pAction){
         if(currentBlock == 0){
             currentBlock = nextBlock;
             nextBlock = r.nextInt(7) + 1;
@@ -31,14 +31,14 @@ public class GameState {
 
         }
 
-        tick ++;
-    }
+        ticks ++;
+    }*/
 
     public void spawn (int pBlock){
 
     }
 
-    public void update(Action pAction){
+    public void applyAction(Action pAction){
         switch (pAction){
             case NOTHING: break;
             case LEFT: this.moveLeft(); break;
@@ -49,23 +49,25 @@ public class GameState {
         }
     }
 
-    private void moveLeft(){
+    public boolean isValid(){
+        return True;
+    }
+
+    public boolean detectCollision(){
 
     }
 
-    private void moveRight(){
 
+
+    public long getTicks() {
+        return ticks;
     }
 
-    private void moveDown(){
-
+    public void setTicks(long pTicks) {
+        this.ticks = pTicks;
     }
 
-    private void turnLeft(){
-
-    }
-
-    private void turnRight(){
-
+    public void incrementTicks(){
+        this.ticks ++;
     }
 }
