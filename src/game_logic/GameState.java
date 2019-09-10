@@ -29,7 +29,7 @@ public class GameState {
 
     public void spawnBlock(){
         currentBlock = nextBlock;
-        nextBlock = new Block(r.nextInt(7));
+        nextBlock = new Block(rng.nextInt(7));
         currentBlock.setPosition(this.startPosition);
         if(detectCollision(currentBlock.getAbsoluteCells())) terminated = true;
     }
