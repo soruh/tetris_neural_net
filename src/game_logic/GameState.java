@@ -7,7 +7,7 @@ public class GameState {
     private int[][] state, previousState;
     private Block currentBlock, nextBlock;
     private long ticks;
-    private static int[] startPosition = {4, 19};
+    private static int[] startPosition = {4, 20};
     private boolean terminated;
     private long score;
     private boolean heldPiece;
@@ -17,7 +17,7 @@ public class GameState {
 
     public GameState(long pRandomSeed){
         state = new int[22][10];
-        ticks = 1; // if this is zero the price drops on the first tick
+        ticks = 0;
         score = 0;
         terminated = false;
         heldPiece = false;
