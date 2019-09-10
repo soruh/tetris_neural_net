@@ -4,15 +4,20 @@ import java.awt.geom.Point2D;
 
 public abstract class Block {
 
-    private Point2D[] cells;
+    private int[][] cells;
     private int type;
 
 
     private void moveLeft(){
-
+        for(int[] cell : cells){
+            cell[0]  --;
+        }
     }
 
     private void moveRight(){
+        for(int[] cell : cells){
+            cell[0]  ++;
+        }
     }
 
     private void moveDown(){
