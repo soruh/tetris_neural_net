@@ -8,37 +8,26 @@ public class GameState {
     private Block currentBlock, nextBlock;
     private long ticks;
     private static int[] startPosition = {4, 19};
+    private boolean terminated;
+    private long score;
 
     Random r;
 
     public GameState(long pRandomSeed){
         state = new int[22][10];
         ticks = 0;
+        score = 0;
+        terminated = false;
 
         r = new Random(pRandomSeed);
     }
 
-    /*public void tick(Action pAction){
-        if(currentBlock == 0){
-            currentBlock = nextBlock;
-            nextBlock = r.nextInt(7) + 1;
-            this.spawn(currentBlock);
-        }
 
-        switch(pAction){
-            case NOTHING: break;
-            case LEFT: checkActionValid(pAction); break;
-            case RIGHT: break;
-
-        }
-
-        ticks ++;
-    }*/
-
-    public void spawn (int pBlock){
+    public void spawnBlock(){
         currentBlock = nextBlock;
         nextBlock = new Block(r.nextInt(7));
         currentBlock.setPosition(this.startPosition);
+        if(detectCollision(currentBlock.getAbsoluteCells())) terminated = true;
     }
 
     public void applyAction(Action pAction){
@@ -53,8 +42,7 @@ public class GameState {
 
                 if(!moved) {
                     placeBlock();
-
-                    // spawn?
+                    spawnBlock();
                 }
 
                 break;
@@ -94,14 +82,14 @@ public class GameState {
             int x = cell[0];
             int y = cell[1];
 
-            if(x < 0 || x >= state.length) return false;
-            if(y < 0 || y >= state[0].length) return false;
+            if(x < 0 || x >= state.length) return true;
+            if(y < 0 || y >= state[0].length) return true;
 
 
-            if(state[x][y] != 0) return false;
+            if(state[x][y] != 0) return true;
         }
 
-        return true;
+        return false;
     }
 
     public int[][] simplifyState(){
