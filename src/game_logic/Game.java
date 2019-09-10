@@ -1,5 +1,7 @@
 package game_logic;
 
+import java.util.Random;
+
 public class Game {
     GameState gameState;
     int ticksPerDrop;
@@ -10,8 +12,6 @@ public class Game {
     }
 
     public boolean tick(Action pAction){
-        if(gameState.getTerminated()) return false;
-
         gameState.applyAction(pAction);
 
         if(gameState.getTicks() % ticksPerDrop == 0) {
@@ -20,10 +20,6 @@ public class Game {
 
         gameState.incrementTicks();
 
-        return true;
-    }
-
-    public void mainLoop(){
-
+        return !gameState.getTerminated();
     }
 }

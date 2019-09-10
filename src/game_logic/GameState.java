@@ -10,6 +10,7 @@ public class GameState {
     private static int[] startPosition = {4, 19};
     private boolean terminated;
     private long score;
+    private boolean heldPiece;
 
     Random rng;
 
@@ -19,6 +20,7 @@ public class GameState {
         ticks = 1; // if this is zero the price drops on the first tick
         score = 0;
         terminated = false;
+        heldPiece = false;
 
         rng = new Random(pRandomSeed);
 
@@ -52,6 +54,16 @@ public class GameState {
 
                 break;
             }
+            case HOLD_PIECE: {
+                if(heldPiece) break;
+
+
+                Block tmp = currentBlock;
+                currentBlock = nextBlock;
+                nextBlock = tmp;
+
+                heldPiece = true;
+            }
         }
     }
 
@@ -68,6 +80,8 @@ public class GameState {
 
     public void placeBlock() {
         int[][] cells = currentBlock.getAbsoluteCells();
+
+        heldPiece = false;
 
         for (int[] cell : cells) {
             int x = cell[0];
