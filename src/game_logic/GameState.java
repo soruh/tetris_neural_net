@@ -4,21 +4,23 @@ import java.util.Random;
 
 public class GameState {
 
-    private int[][] state, previousState;
+    private int[][] grid, previousState;
     private Block currentBlock, nextBlock;
     private long ticks;
     private static int[] startPosition = {4, 20};
     private boolean terminated;
     private int score;
     private boolean heldPiece;
+    private int level;
 
     Random rng;
 
 
     public GameState(long pRandomSeed){
-        state = new int[22][10];
+        grid = new int[22][10];
         ticks = 0;
         score = 0;
+        level = 0;
         terminated = false;
         heldPiece = false;
 
@@ -49,6 +51,9 @@ public class GameState {
 
                 if(!moved) {
                     placeBlock();
+
+                    breakRows();
+
                     spawnBlock();
                 }
 
@@ -63,6 +68,61 @@ public class GameState {
                 nextBlock = tmp;
 
                 heldPiece = true;
+            }
+        }
+    }
+
+    private int scoreForNRows(int rowsBroken, int scoreMultiplier) {
+        int rawScore = 0;
+        switch (rowsBroken) {
+            case 1: rawScore = 2;
+            case 2: rawScore = 5;
+            case 3: rawScore = 15;
+            case 4: rawScore = 60;
+        }
+
+        return rawScore * scoreMultiplier;
+    }
+
+    private void breakRows() {
+        int scoreMultiplier = 20 * (level + 1);
+
+        int consecutiveRowsBroken = 0;
+        for(int rowIndex=0;rowIndex<grid.length;rowIndex++) {
+            int[] row = grid[rowIndex];
+
+            boolean hasGap = false;
+            for (int cell : row) {
+                if(cell == 0) {
+                    hasGap = true;
+                    break;
+                }
+            }
+
+            if(hasGap) {
+                if(consecutiveRowsBroken > 0) {
+                    score += scoreForNRows(consecutiveRowsBroken, scoreMultiplier);
+
+                    rowIndex -= consecutiveRowsBroken;
+
+                    sliceRows(rowIndex, consecutiveRowsBroken);
+
+                    consecutiveRowsBroken = 0;
+                }
+            }else{
+                consecutiveRowsBroken++;
+            }
+        }
+    }
+
+    private void sliceRows(int rowIndex, int nRows) {
+        int offsetRow;
+        for (int i = rowIndex; i < grid.length; i++) {
+            offsetRow = i + nRows;
+            if(offsetRow < grid.length) {
+                grid[i] = grid[i + nRows];
+            } else {
+                grid[i] = new int[grid[0].length];
             }
         }
     }
@@ -87,7 +147,7 @@ public class GameState {
             int x = cell[0];
             int y = cell[1];
 
-            this.state[x][y] = currentBlock.getType();
+            this.grid[x][y] = currentBlock.getType();
         }
     }
 
@@ -119,19 +179,19 @@ public class GameState {
             int x = cell[0];
             int y = cell[1];
 
-            if(x < 0 || x >= state.length) return true;
-            if(y < 0 || y >= state[0].length) return true;
+            if(x < 0 || x >= grid.length) return true;
+            if(y < 0 || y >= grid[0].length) return true;
 
 
-            if(state[x][y] != 0) return true;
+            if(grid[x][y] != 0) return true;
         }
 
         return false;
     }
 
     public int[][] simplifyState(){
-        int[][] simplifiedState = new int[state.length][state[0].length];
-        simplifiedState = state.clone();
+        int[][] simplifiedState = new int[grid.length][grid[0].length];
+        simplifiedState = grid.clone();
         for (int[] line: simplifiedState) {
             for(int cell: line){
                 if(cell > 0) cell = 1;
