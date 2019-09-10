@@ -1,4 +1,4 @@
-package Beispiel;
+package network;
 
 public abstract class ActivationFunction {
     public static final ActivationFunction sigmoid = new _sigmoid();

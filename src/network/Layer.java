@@ -1,4 +1,4 @@
-package Beispiel;
+package network;
 
 import java.util.Random;
 

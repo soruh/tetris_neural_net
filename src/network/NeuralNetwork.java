@@ -1,4 +1,4 @@
-package Beispiel;
+package network;
 
 public class NeuralNetwork {
 
