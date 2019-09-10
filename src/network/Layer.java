@@ -18,7 +18,7 @@ public class Layer {
     Random r = new Random();
 
 
-    public Layer(int pInputs, int pOutputs){
+    Layer(int pInputs, int pOutputs) {
         this.func = ActivationFunction.sigmoid;
 
         this.cInputs = pInputs;
@@ -32,7 +32,7 @@ public class Layer {
         this.randomize();
     }
 
-    public Layer(double[][] pWeights, double pBias){
+    Layer(double[][] pWeights, double pBias) {
         this.func = ActivationFunction.sigmoid;
 
         this.weights = pWeights;
@@ -47,78 +47,78 @@ public class Layer {
     }
 
 
-    public void randomize(){
+    void randomize() {
         this.bias = (r.nextDouble() * 2) - 1;
-        for(double[] values: weights){
-            for(double value: values){
+        for (double[] values : weights) {
+            for (double value : values) {
                 value = (r.nextDouble() * 2) - 1;
             }
         }
     }
 
-    public double getBias() {
+    double getBias() {
         return this.bias;
     }
 
-    public double[][] getWeights() {
+    double[][] getWeights() {
         return weights;
     }
 
-    public Layer getNextLayer() {
+    Layer getNextLayer() {
         return next;
     }
 
-    public Layer getPreviousLayer() {
+    Layer getPreviousLayer() {
         return previous;
     }
 
-    public ActivationFunction getFunc() {
+    ActivationFunction getFunc() {
         return func;
     }
 
-    public double[] getLastOutputs() {
+    private double[] getLastOutputs() {
         return lastOutputs;
     }
 
-    public double[] getDeltas() {
+    private double[] getDeltas() {
         return deltas;
     }
 
-    public double getLearningRate() {
+    double getLearningRate() {
         return learningRate;
     }
 
-    public void setBias(double pBias) {
+    void setBias(double pBias) {
         this.bias = pBias;
     }
 
-    public void setWeights(double[][] pWeights) {
+    void setWeights(double[][] pWeights) {
         this.weights = pWeights;
     }
 
-    public void setNextLayer(Layer pNext) {
+    void setNextLayer(Layer pNext) {
         this.next = pNext;
     }
 
-    public void setPreviousLayer(Layer pPrevious){
+    void setPreviousLayer(Layer pPrevious) {
         this.previous = pPrevious;
     }
 
-    public void setFunc(ActivationFunction pFunc) {
+    void setFunc(ActivationFunction pFunc) {
         this.func = pFunc;
     }
 
-    public void setLearningRate(double pLearningRate) {
+    void setLearningRate(double pLearningRate) {
         this.learningRate = pLearningRate;
     }
 
-    public double[] forwardPass(double[] pInput){
+    double[] forwardPass(double[] pInput) {
         lastInputs = pInput;
 
-        if(pInput.length == cInputs){
+        if (pInput.length == cInputs) {
             double[] result = new double[this.cOutputs];
-            for(int i = 0; i < this.cOutputs; i++){
-                for(int j = 0; j < this.cInputs; j++){
+            for (int i = 0; i < this.cOutputs; i++) {
+                for (int j = 0; j < this.cInputs; j++) {
                     result[i] += weights[i][j] * pInput[j];
                 }
                 result[i] += bias;
@@ -133,7 +133,7 @@ public class Layer {
         }
     }
 
-    public void backPropagation(double[] pTargets){
+    void backPropagation(double[] pTargets) {
         for (int i = 0; i < cOutputs; i++) {
             deltas[i] = (lastOutputs[i] - pTargets[i]) * lastOutputs[i] * (1 - lastOutputs[i]);
         }
@@ -144,7 +144,7 @@ public class Layer {
         }
     }
 
-    public void backPropagation(){
+    void backPropagation() {
         for (int i = 0; i < cOutputs; i++) {
             double nextDeltaSum = 0;
             for (int j = 0; j < next.getDeltas().length; j++) {
@@ -163,7 +163,7 @@ public class Layer {
         }
     }
 
-    public void gradientDescend() {
+    void gradientDescend() {
         for (int i = 0; i < cOutputs; i++) {
             for (int j = 0; j < cInputs; j++) {
                 weights[i][j] -= gradient[i][j] * learningRate;
@@ -171,7 +171,7 @@ public class Layer {
         }
     }
 
-    public void print(){
+    void print() {
         System.out.println("Inputs: " + cInputs);
         System.out.println("Outputs: " + cOutputs);
         System.out.print("Weights: ");
