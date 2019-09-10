@@ -1,6 +1,12 @@
 package game_logic;
 
+import java.awt.geom.Point2D;
+
 public abstract class Block {
+
+    private Point2D[] cells;
+    private int type;
+
 
     private void moveLeft(){
 
