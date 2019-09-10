@@ -1,67 +1,67 @@
+package Beispiel;
+
 public class NeuralNetwork {
-    Layer inputLayer;
-    Layer outputLayer;
 
-    private double stepSize;
+    private Layer inputLayer, outputLayer;
+    private double learningRate;
 
 
-    public NeuralNetwork() {}
+    public NeuralNetwork(){}
 
-    public void addLayer(Layer layer) {
-        if (inputLayer == null) {
-            inputLayer = outputLayer = layer;
+
+    public void addLayer(Layer pLayer){
+        if(inputLayer == null){
+            inputLayer = pLayer;
+            outputLayer = inputLayer;
         } else {
-            // outputLayer is now the second to last layer
-            outputLayer.setNextLayer(layer);
-            layer.setPreviousLayer(outputLayer);
-
-            outputLayer = layer;
+            outputLayer.setNextLayer(pLayer);
+            pLayer.setPreviousLayer(outputLayer);
+            outputLayer = pLayer;
         }
     }
 
-    private double[] _forwardPass(Layer layer, double[] input) {
-        if(layer == null) return input;
-        return _forwardPass(layer.getNextLayer(), layer.forwardPass(input));
+    public double[] forwardPass(double[] pInput){
+        return _forwardPass(inputLayer, pInput);
     }
 
-    public double[] forwardPass(double[] input) {
-        return _forwardPass(inputLayer, input);
+    private double[] _forwardPass(Layer pLayer, double[] pInput){
+        if(pLayer ==  null) return pInput;
+        else return _forwardPass(pLayer.getNextLayer(), pLayer.forwardPass(pInput));
     }
 
-    public void backwardPass(ErrorFunction errorFunc, double[] target) {
-        // if(lastInput == null) throw new Exception("");
-
-        outputLayer.backwardPassInitial(errorFunc, target);
-
-        Layer layer = outputLayer.getPreviousLayer();
-
-        while (layer != null) {
-            layer.backwardPass(errorFunc);
-
-            layer = layer.getPreviousLayer();
+    public void backPropagation(double[] pTargets){
+        Layer currentLayer = outputLayer;
+        currentLayer.backPropagation(pTargets);
+        while(currentLayer != inputLayer) {
+            currentLayer = currentLayer.getPreviousLayer();
+            currentLayer.backPropagation();
         }
+    }
 
-        layer = outputLayer;
-
-        while (layer != null) {
-            layer.applyAdjustments(stepSize);
-
-            layer = layer.getPreviousLayer();
+    public void gradientDescend(){
+        Layer currentLayer = inputLayer;
+        currentLayer.gradientDescend();
+        while(currentLayer != outputLayer) {
+            currentLayer = currentLayer.getNextLayer();
+            currentLayer.gradientDescend();
         }
+    }
+
+    public double[] gradientEpisode(double[] pInputs, double[] pTargets){
+        double[] outputs;
+        outputs = this.forwardPass(pInputs);
+        this.backPropagation(pTargets);
+        this.gradientDescend();
+
+        return outputs;
     }
 
     public void print(){
-        System.out.println("[ NeuralNetwork ]");
-        Layer layer = inputLayer;
-
-        while (layer != null) {
-            layer.print();
-
-            layer = layer.getNextLayer();
+        Layer currentLayer = inputLayer;
+        currentLayer.print();
+        while(currentLayer != outputLayer){
+            currentLayer = currentLayer.getNextLayer();
+            currentLayer.print();
         }
-    }
-
-    public void setStepSize(double stepSize) {
-        this.stepSize = stepSize;
     }
 }
