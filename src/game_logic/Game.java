@@ -1,27 +1,29 @@
 package game_logic;
 
-import java.util.Random;
-
 public class Game {
-    GameState state;
+    GameState gameState;
     int ticksPerDrop;
 
     public Game(long randomSeed){
-        state = new GameState(randomSeed);
+        gameState = new GameState(randomSeed);
         ticksPerDrop = 24;
     }
 
     public boolean tick(Action pAction){
-        if(state.getTerminated()) return false;
+        if(gameState.getTerminated()) return false;
 
-        state.applyAction(pAction);
+        gameState.applyAction(pAction);
 
-        if(state.getTicks() % ticksPerDrop == 0) {
-            state.applyAction(Action.DOWN);
+        if(gameState.getTicks() % ticksPerDrop == 0) {
+            gameState.applyAction(Action.DOWN);
         }
 
-        state.incrementTicks();
+        gameState.incrementTicks();
 
         return true;
+    }
+
+    public void mainLoop(){
+
     }
 }

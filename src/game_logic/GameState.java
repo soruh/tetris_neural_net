@@ -13,6 +13,7 @@ public class GameState {
 
     Random rng;
 
+
     public GameState(long pRandomSeed){
         state = new int[22][10];
         ticks = 1; // if this is zero the price drops on the first tick
@@ -115,26 +116,24 @@ public class GameState {
     }
 
     public int[][] simplifyState(){
-        int[][] simplifiedState = state;
+        int[][] simplifiedState = new int[state.length][state[0].length];
+        simplifiedState = state.clone();
         for (int[] line: simplifiedState) {
             for(int cell: line){
                 if(cell > 0) cell = 1;
             }
         }
-
+        for(int[] cell: currentBlock.getAbsoluteCells()){
+            simplifiedState[cell[0]][cell[1]] = -1;
+        }
         return simplifiedState;
     }
 
+    public long getTicks() { return ticks; }
 
-    public long getTicks() {
-        return ticks;
-    }
+    public boolean getTerminated(){ return this.terminated; }
 
-    public void setTicks(long pTicks) {
-        this.ticks = pTicks;
-    }
+    public void setTicks(long pTicks) { this.ticks = pTicks; }
 
-    public void incrementTicks(){
-        this.ticks ++;
-    }
+    public void incrementTicks(){ this.ticks ++; }
 }
