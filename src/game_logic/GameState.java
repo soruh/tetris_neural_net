@@ -9,7 +9,7 @@ public class GameState {
     private long ticks;
     private static int[] startPosition = {4, 20};
     private boolean terminated;
-    private long score;
+    private int score;
     private boolean heldPiece;
 
     Random rng;
@@ -143,9 +143,22 @@ public class GameState {
         return simplifiedState;
     }
 
+    public double[] flattenedState(){
+        int[][] simplifiedState = this.simplifyState();
+        double[] flattenedState = new double[simplifiedState.length * simplifiedState[0].length];
+        for (int i = 0; i < simplifiedState.length; i++) {
+            for (int j = 0; j < simplifiedState[0].length; j++) {
+                flattenedState[(i*simplifiedState[0].length) + j] = (double)simplifiedState[i][j];
+            }
+        }
+        return  flattenedState;
+    }
+
     public long getTicks() { return ticks; }
 
     public boolean getTerminated(){ return this.terminated; }
+
+    public int getScore(){ return this.score; }
 
     public void setTicks(long pTicks) { this.ticks = pTicks; }
 

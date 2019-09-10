@@ -1,7 +1,5 @@
 package game_logic;
 
-import java.util.Random;
-
 public class Game {
     GameState gameState;
     int ticksPerDrop;
@@ -21,5 +19,10 @@ public class Game {
         gameState.incrementTicks();
 
         return !gameState.getTerminated();
+    }
+
+    public GameState getGameState(){
+        return this.gameState;
+
     }
 }
