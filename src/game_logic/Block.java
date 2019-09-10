@@ -13,11 +13,12 @@ public abstract class Block {
     }
 
     private void moveRight(){
-
     }
 
     private void moveDown(){
-
+        for(int[] cell : cells) {
+            cell[1] -= 1;
+        }
     }
 
     public abstract void turnLeft();
