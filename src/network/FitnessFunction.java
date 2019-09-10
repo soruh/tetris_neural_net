@@ -25,14 +25,14 @@ public abstract class FitnessFunction {
 
                 Action nextAction;
                 switch (biggestOutputIndex){
-                    case 0: nextAction = Action.NOTHING; break;
                     case 1: nextAction = Action.LEFT; break;
                     case 2: nextAction = Action.RIGHT; break;
                     case 3: nextAction = Action.DOWN; break;
                     case 4: nextAction = Action.TURN_LEFT; break;
                     case 5: nextAction = Action.TURN_RIGHT; break;
                     case 6: nextAction = Action.HOLD_PIECE; break;
-                    default: nextAction = Action.NOTHING; break;
+                    default:
+                    case 0: nextAction = Action.NOTHING; break;
                 }
 
                 terminated = game.tick(nextAction);
