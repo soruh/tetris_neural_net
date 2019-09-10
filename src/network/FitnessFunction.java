@@ -41,5 +41,5 @@ public abstract class FitnessFunction {
         }
     }
 
-    public abstract double evaluate(NeuralNetwork network);
+    public abstract double evaluate(NeuralNetwork pNetwork, long pRandomSeed);
 }
