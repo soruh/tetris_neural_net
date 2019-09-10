@@ -5,6 +5,9 @@ public abstract class Block {
     private int[][] cells;
     private int type;
 
+    public abstract void turnLeft();
+
+    public abstract void turnRight();
 
     private void moveLeft(){
         for(int[] cell : cells){
@@ -24,7 +27,32 @@ public abstract class Block {
         }
     }
 
-    public abstract void turnLeft();
 
-    public abstract void turnRight();
+    public class lPiece{
+
+    }
+
+    public class LPieceInverted{
+
+    }
+
+    public class TPiece{
+
+    }
+
+    public class IPiece{
+
+    }
+
+    public class BlockPiece{
+
+    }
+
+    public class StepPiece{
+
+    }
+
+    public class StepPieceInverted{
+
+    }
 }
