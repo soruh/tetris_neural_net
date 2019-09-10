@@ -2,7 +2,7 @@ package Tetris;
 
 import java.util.Random;
 
-public class Game {
+public class GameState {
 
     private int[][] screen, nextScreen;
     private int currentBlock, nextBlock;
@@ -10,7 +10,7 @@ public class Game {
 
     Random r = new Random();
 
-    public Game(){
+    public GameState(){
         screen = new int[22][10];
         tick = 0;
     }
@@ -24,7 +24,7 @@ public class Game {
 
         switch(pAction){
             case NOTHING: break;
-            case LEFT: break;
+            case LEFT: checkActionValid(pAction); break;
             case RIGHT: break;
 
         }
