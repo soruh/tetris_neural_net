@@ -15,7 +15,7 @@ public class GameState {
 
     public GameState(long pRandomSeed){
         state = new int[22][10];
-        ticks = 0;
+        ticks = 1; // if this is zero the price drops on the first tick
         score = 0;
         terminated = false;
 
