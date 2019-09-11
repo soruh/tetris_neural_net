@@ -8,7 +8,6 @@ public class GeneticTrainer {
     private NeuralNetwork[] networks;
     private double[] fitness;
     private FitnessFunction func;
-    private Random r;
 
     public GeneticTrainer(int networks, FitnessFunction func) {
         this.func = func;
@@ -23,8 +22,10 @@ public class GeneticTrainer {
     }
 
     public double[] trainGeneration() {
+        Random rng = new Random();
+        long seed = rng.nextLong();
         for (int i = 0; i < networks.length; i++) {
-            fitness[i] = func.evaluate(networks[i]);
+            fitness[i] = func.evaluate(networks[i], seed);
         }
 
         parallelSort(fitness, networks);
