@@ -8,14 +8,14 @@ import java.util.Random;
 public abstract class FitnessFunction {
     public static final FitnessFunction tetris = new _tetris();
 
-    private static class _tetris extends FitnessFunction{
+    private static class _tetris extends FitnessFunction {
         public double evaluate(NeuralNetwork pNetwork, long pRandomSeed) {
 
             Game game = new Game(pRandomSeed);
             boolean terminated = false;
             double[] rawOutput;
 
-            while((!terminated) &&(game.getGameState().getScore() <= 999999)){
+            while((!terminated) && (game.getGameState().getScore() <= 999999)){
 
                 rawOutput = pNetwork.forwardPass(game.getGameState().flattenedState());
 
