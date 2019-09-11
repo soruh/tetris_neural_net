@@ -224,6 +224,8 @@ public class GameState {
 
     public int getScore(){ return this.score; }
 
+    public int[][] getGrid(){ return  this.grid; }
+
     public void setTicks(long pTicks) { this.ticks = pTicks; }
 
     public void incrementTicks(){ this.ticks ++; }
