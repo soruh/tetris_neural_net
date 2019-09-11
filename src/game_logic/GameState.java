@@ -132,7 +132,7 @@ public class GameState {
     }
 
     private Block randomBlock(){
-        return new Block(rng.nextInt(7));
+        return new Block(rng.nextInt(7) + 1);
     }
 
     public void spawn (int pBlock){

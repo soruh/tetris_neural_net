@@ -14,7 +14,7 @@ public class Main {
         networks = new NeuralNetwork[100];
         for (int i = 0; i < networks.length; i++) {
             networks[i] = new NeuralNetwork();
-            networks[i].addLayer()
+            networks[i].addLayer(200, )
         }
         trainer = new GeneticTrainer();
     }
