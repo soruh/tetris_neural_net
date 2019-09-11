@@ -1,11 +1,20 @@
 package game_logic;
 
+import java.util.Random;
+
 public class Game {
     GameState gameState;
     int ticksPerDrop;
 
     public Game(long randomSeed){
-        gameState = new GameState(randomSeed);
+        gameState = new GameState(new Random(randomSeed));
+
+        ticksPerDrop = 24;
+    }
+
+    public Game(){
+        gameState = new GameState(new Random());
+
         ticksPerDrop = 24;
     }
 

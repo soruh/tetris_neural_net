@@ -50,10 +50,9 @@ public class Gui extends Application {
         canvas = new Canvas(500, 1000);
         gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
-
-        Random r = new Random();
+        
         //tetris = new Game(r.nextLong());
-        tetris = new Game(1);
+        tetris = new Game();
         //gc.setFill(Color.BLUE);
         //gc.fillRect(5, 5, 40, 40);
 

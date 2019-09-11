@@ -16,7 +16,7 @@ public class GameState {
     Random rng;
 
 
-    public GameState(long pRandomSeed){
+    public GameState(Random _rng){
         grid = new int[22][10];
         ticks = 0;
         score = 0;
@@ -24,12 +24,13 @@ public class GameState {
         terminated = false;
         heldPiece = false;
 
-        rng = new Random(pRandomSeed);
+        rng = _rng;
 
         currentBlock = randomBlock();
         currentBlock.setPosition(startPosition);
         nextBlock = randomBlock();
     }
+
 
 
     public void spawnBlock(){
