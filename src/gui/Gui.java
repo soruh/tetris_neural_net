@@ -132,7 +132,7 @@ public class Gui extends Application {
         }
         GameState state = tetris.getGameState();
 
-        System.out.println(state.getScore());
+
 
         int[][] grid = state.getGrid();
 
