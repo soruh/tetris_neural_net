@@ -234,4 +234,8 @@ public class GameState {
     public void setTicks(long pTicks) { this.ticks = pTicks; }
 
     public void incrementTicks(){ this.ticks ++; }
+
+    public Block getCurrentBlock() {
+        return currentBlock;
+    }
 }
