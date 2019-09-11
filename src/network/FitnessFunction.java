@@ -17,8 +17,9 @@ public abstract class FitnessFunction {
 
             while((!terminated) &&(game.getGameState().getScore() <= 999999)){
 
-                int biggestOutputIndex = 0;
                 rawOutput = pNetwork.forwardPass(game.getGameState().flattenedState());
+
+                int biggestOutputIndex = 0;
                 for (int i = 0; i < rawOutput.length; i++) {
                     if (rawOutput[i] >= rawOutput[biggestOutputIndex]) biggestOutputIndex = i;
                 }
@@ -30,7 +31,9 @@ public abstract class FitnessFunction {
                     case 3: nextAction = Action.DOWN; break;
                     case 4: nextAction = Action.TURN_LEFT; break;
                     case 5: nextAction = Action.TURN_RIGHT; break;
-                    case 6: nextAction = Action.HOLD_PIECE; break;
+                    // case 6: nextAction = Action.HOLD_PIECE; break;
+                    // we don't allow the net to use this feature, since it would be too
+                    // difficult for it to learn it.
                     default:
                     case 0: nextAction = Action.NOTHING; break;
                 }
