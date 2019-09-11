@@ -1,5 +1,11 @@
 package network;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.Arrays;
+
 public class Main {
 
     private GeneticTrainer trainer;
@@ -8,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
-        main.train(100);
+        main.train(10);
     }
 
     public Main(){
@@ -29,5 +35,51 @@ public class Main {
             trainedGeneration = trainer.trainGeneration(trainedGeneration);
         }
         //to do: save weights
+    }
+
+    public void saveWeights(String path, NeuralNetwork pNetwork) {
+
+
+        String toWrite = "";
+        double[] weights = pNetwork.getWeightsAsArray();
+        toWrite += Arrays.toString(weights);
+        toWrite = toWrite.replace('[',' ');
+        toWrite = toWrite.replace(']',' ');
+        toWrite = toWrite.trim();
+
+        try {
+            FileWriter is = new FileWriter(path);
+            BufferedWriter buffer = new BufferedWriter(is);
+
+            buffer.write(toWrite);
+            buffer.close();
+            is.close();
+        } catch (Exception e) {
+
+        }
+
+        System.out.println("Speichern abgeschlossen.");
+    }
+
+    public void loadWeights(String pfad, NeuralNetwork pNetwork)
+    {
+        String temp = "";
+        try {
+            FileReader is = new FileReader(pfad);
+            BufferedReader buffer = new BufferedReader(is);
+            temp = buffer.readLine();
+            buffer.close();
+            is.close();
+        } catch (Exception e) {
+        }
+        String[] strValues = temp.split(",");
+        double[] values = new double[strValues.length];
+        for (int i = 0; i < strValues.length; i++) {
+            values[i] = Double.valueOf(strValues[i]);
+        }
+
+        pNetwork.setWeightsFromArray(values);
+
+        System.out.println("Laden abgeschlossen.");
     }
 }

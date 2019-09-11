@@ -1,5 +1,7 @@
 package network;
 
+import java.util.ArrayList;
+
 public class NeuralNetwork {
 
     private Layer inputLayer;
@@ -69,6 +71,50 @@ public class NeuralNetwork {
         while (currentLayer != outputLayer) {
             currentLayer = currentLayer.getNextLayer();
             currentLayer.print();
+        }
+    }
+
+    public double[] getWeightsAsArray()
+    {
+        ArrayList<Double> w = new ArrayList<>();
+        Layer currentLayer = inputLayer;
+
+        while( currentLayer != null )
+        {
+            double[][] temp = currentLayer.getWeights();
+            for( int i = 0; i < temp.length; i++ )
+            {
+                for( int j = 0; j < temp[i].length; j++)
+                {
+                    w.add(temp[i][j]);
+                }
+            }
+            currentLayer = currentLayer.getNextLayer();
+        }
+
+        double[] arr =  new double[w.size()];
+        for( int i = 0; i < arr.length; i++)
+            arr[i] = w.get(i);
+
+        return arr;
+    }
+
+    public void setWeightsFromArray(double[] w)
+    {
+        Layer currentLayer = inputLayer;
+        int index = 0;
+
+        while( currentLayer != null )
+        {
+            for( int i = 0; i < currentLayer.getWeights().length; i++ )
+            {
+                for( int j = 0; j < currentLayer.getWeights()[i].length; j++)
+                {
+                    currentLayer.getWeights()[i][j] = w[index];
+                    index++;
+                }
+            }
+            currentLayer = currentLayer.getNextLayer();
         }
     }
 }
