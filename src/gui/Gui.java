@@ -23,6 +23,7 @@ public class Gui extends Application {
     private Scene scene;
 
     private boolean oddFrame = false;
+    private Block currentBlock;
     private ArrayList<String> inputs = new ArrayList<>();
     private Action lastUserAction;
 
@@ -98,32 +99,47 @@ public class Gui extends Application {
             boolean found = false;
             switch (inputs.get(i)) {
                 case "LEFT":
-                    found = true;
-                    action = Action.LEFT;
+                    if (lastUserAction != Action.LEFT) {
+                        found = true;
+                        action = Action.LEFT;
+                        lastUserAction = Action.LEFT;
+                    }
                     break;
                 case "RIGHT":
-                    found = true;
-                    action = Action.RIGHT;
+                    if (lastUserAction != Action.RIGHT) {
+                        found = true;
+                        action = Action.RIGHT;
+                        lastUserAction = Action.RIGHT;
+                    }
                     break;
                 case "UP":
-                    found = true;
-                    action = Action.TURN_RIGHT;
+                    if (lastUserAction != Action.TURN_RIGHT) {
+                        found = true;
+                        action = Action.TURN_RIGHT;
+                        lastUserAction = Action.TURN_RIGHT;
+                    }
                     break;
                 case "DOWN":
-                    found = true;
-                    action = Action.DOWN;
+                    Block newCurrentBlock = tetris.getGameState().getCurrentBlock();
+                    if (lastUserAction != Action.DOWN) {
+                        currentBlock = newCurrentBlock;
+                    }
+                    if (currentBlock == newCurrentBlock) {
+                        found = true;
+                        action = Action.DOWN;
+                        lastUserAction = Action.DOWN;
+                    }
                     break;
                 case "SHIFT":
-                    found = true;
-                    action = Action.LEFT;
+                    if (lastUserAction != Action.TURN_LEFT) {
+                        found = true;
+                        action = Action.TURN_LEFT;
+                        lastUserAction = Action.TURN_LEFT;
+                    }
                     break;
-            }
-
-            if (found && lastUserAction != action) {
-                lastUserAction = action;
-                break;
-            } else {
-                action = Action.NOTHING;
+                default:
+                    action = Action.NOTHING;
+                    lastUserAction = Action.NOTHING;
             }
         }
 
