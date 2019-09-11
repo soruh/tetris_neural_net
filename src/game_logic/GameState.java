@@ -235,10 +235,6 @@ public class GameState {
 
     public void incrementTicks(){ this.ticks ++; }
 
-    public int[][] getGrid() {
-        return grid;
-    }
-
     public Block getCurrentBlock() {
         return currentBlock;
     }
