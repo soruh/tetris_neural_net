@@ -118,8 +118,6 @@ public class GameState {
 
         if(rowsBroken > 0) {
             int scoreDelta = scoreForNRows(rowsBroken, level + 1);
-            System.out.println("rowsBroken: "+rowsBroken);
-            System.out.println("scoreDelta: "+scoreDelta);
 
             score += scoreDelta;
         }
