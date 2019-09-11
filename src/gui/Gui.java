@@ -26,6 +26,7 @@ public class Gui extends Application {
     private Block currentBlock;
     private ArrayList<String> inputs = new ArrayList<>();
     private Action lastUserAction;
+    private double d = 50.0;
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -47,7 +48,7 @@ public class Gui extends Application {
         scene = new Scene(root);
         stage.setScene(scene);
 
-        canvas = new Canvas(500, 1000);
+        canvas = new Canvas(250, 500);
         gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
         
@@ -206,7 +207,7 @@ public class Gui extends Application {
                         break;
 
                 }
-                gc.fillRect(2 + x * 50, 952 - (y * 50), 46, 46);
+                gc.fillRect(1 + (x * 25), 476 - (y * 25), 23, 23);
             }
 
             stage.show();
