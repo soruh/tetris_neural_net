@@ -50,6 +50,8 @@ public class GameState {
             case DOWN: {
                 boolean moved = moveIfValid(0, -1, 0);
 
+                System.out.println(moved);
+
                 if(!moved) {
                     placeBlock();
 
@@ -181,11 +183,11 @@ public class GameState {
 
     public boolean detectCollision(int[][] cells){
         for(int[] cell : cells){
-            int x = cell[0];
-            int y = cell[1];
+            int y = cell[0];
+            int x = cell[1];
 
-            if(x < 0 || y >= grid.length) return true;
-            if(y < 0 || x >= grid[0].length) return true;
+            if(y < 0 || y >= grid.length) return true;
+            if(x < 0 || x >= grid[0].length) return true;
 
 
             if(grid[y][x] != 0) return true;

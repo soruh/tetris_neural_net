@@ -88,9 +88,7 @@ public class Block {
 
         int[][] absoluteCells = new int[relativeCells.length][relativeCells[0].length];
         for(int i=0; i<relativeCells.length; i++) {
-            for (int j = 0; j < relativeCells[i].length; j++) {
-                absoluteCells[i][j] = relativeCells[i][j] + position[j];
-            }
+            absoluteCells[i] = new int[]{relativeCells[i][1] + position[0], relativeCells[i][0] + position[1]};
         }
 
         return absoluteCells;
