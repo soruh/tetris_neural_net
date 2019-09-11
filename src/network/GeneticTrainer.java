@@ -25,6 +25,7 @@ public class GeneticTrainer {
         }
 
         parallelSort(fitness, pGeneration);
+        System.out.println(fitness[0]);
         NeuralNetwork[] newGeneration = this.createNewGeneration(pGeneration);
 
         return newGeneration;

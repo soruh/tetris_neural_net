@@ -15,8 +15,9 @@ public abstract class FitnessFunction {
             boolean terminated = false;
             double[] rawOutput;
 
-            while((!terminated) && (game.getGameState().getScore() <= 999999)){
+            Action nextAction;
 
+            do {
                 rawOutput = pNetwork.forwardPass(game.getGameState().flattenedState());
 
                 int biggestOutputIndex = 0;
@@ -24,7 +25,6 @@ public abstract class FitnessFunction {
                     if (rawOutput[i] >= rawOutput[biggestOutputIndex]) biggestOutputIndex = i;
                 }
 
-                Action nextAction;
                 switch (biggestOutputIndex){
                     case 1: nextAction = Action.LEFT; break;
                     case 2: nextAction = Action.RIGHT; break;
@@ -38,9 +38,9 @@ public abstract class FitnessFunction {
                     case 0: nextAction = Action.NOTHING; break;
                 }
 
-                terminated = game.tick(nextAction);
-            }
-            return game.getGameState().getScore();
+            } while(game.tick(nextAction) && (game.getGameState().getScore() <= 999999));
+
+            return game.getGameState().getTicks() + game.getGameState().getScore();
         }
     }
 

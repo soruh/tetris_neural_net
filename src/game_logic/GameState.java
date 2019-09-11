@@ -163,7 +163,7 @@ public class GameState {
 
         int oldRotation = currentBlock.getRotation();
 
-        currentBlock.setRotation((oldRotation + dr) % 4);
+        currentBlock.setRotation((oldRotation + dr + 4) % 4);
         currentBlock.setPosition(newPosition);
 
         int[][] cells = currentBlock.getAbsoluteCells();
