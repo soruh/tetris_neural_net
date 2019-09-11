@@ -26,7 +26,7 @@ public class GeneticTrainer {
 
 
 
-    public NeuralNetwork[] crossover(double crack, NeuralNetwork parentNetwork1, NeuralNetwork parentNetwork2) {
+    public NeuralNetwork[] crossover(double pCrack, NeuralNetwork parentNetwork1, NeuralNetwork parentNetwork2) {
 
         NeuralNetwork childNetwork1 = new NeuralNetwork();
         NeuralNetwork childNetwork2 = new NeuralNetwork();
@@ -43,71 +43,17 @@ public class GeneticTrainer {
             network2Layer = network2Layer.getNextLayer();
         }
 
+        double[] childNetwork1Weights = childNetwork1.getWeightsAsArray();
+        double[] childNetwork2Weights = childNetwork2.getWeightsAsArray();
+        double[] temp = childNetwork1Weights.clone();
 
+        int crackIndex = (int) pCrack * childNetwork1Weights.length;
 
-        int totalNWeights = 0;
-
-        network1Layer = childNetwork1.getInputLayer();
-        while (network1Layer != null) {
-            totalNWeights += network1Layer.getNWeights();
-
-            network1Layer = network1Layer.getNextLayer();
+        for (int i = crackIndex; i < childNetwork1Weights.length; i++) {
+            childNetwork1Weights[i] = childNetwork2Weights[i];
+            childNetwork2Weights[i] = temp[i];
         }
-
-        int crackWeight = (int) (totalNWeights * crack);
-
-        int weightCounter = 0;
-
-        Layer childNetwork1Layer = childNetwork1.getInputLayer();
-        Layer childNetwork2Layer = childNetwork2.getInputLayer();
-
-        while (childNetwork1Layer != null) { // this should always be true
-
-            int nLayerWeights = childNetwork1Layer.getNWeights();
-
-            if (weightCounter + nLayerWeights > crackWeight) break;
-
-            weightCounter += nLayerWeights;
-
-            childNetwork1Layer = childNetwork1Layer.getNextLayer();
-            childNetwork2Layer = childNetwork2Layer.getNextLayer();
-        }
-
-        if (crackWeight - weightCounter < (childNetwork1Layer.getNWeights() / 2)) {
-            double tmpBias = childNetwork1Layer.getBias();
-
-            childNetwork1Layer.setBias(childNetwork2Layer.getBias());
-            childNetwork2Layer.setBias(tmpBias);
-        }
-
-        int j = weightCounter % childNetwork1Layer.getcOutputs();
-
-        for (int i = weightCounter / childNetwork1Layer.getcOutputs(); i < childNetwork1Layer.getWeights().length; i++) {
-            for (; j < childNetwork1Layer.getWeights()[0].length; j++) {
-                double tmpWeights = childNetwork1Layer.getWeights()[i][j];
-
-                childNetwork1Layer.getWeights()[i][j] = childNetwork2Layer.getWeights()[i][j];
-                childNetwork2Layer.getWeights()[i][j] = tmpWeights;
-            }
-            j = 0;
-        }
-
-        while (childNetwork1Layer != null) {
-            double[][] tmpWeights = childNetwork1Layer.getWeights();
-            childNetwork1Layer.setWeights(childNetwork2Layer.getWeights());
-            childNetwork2Layer.setWeights(tmpWeights);
-
-            childNetwork1Layer = childNetwork1Layer.getNextLayer();
-            childNetwork2Layer = childNetwork2Layer.getNextLayer();
-
-            double tmpBias = childNetwork1Layer.getBias();
-            childNetwork1Layer.setBias(childNetwork2Layer.getBias());
-            childNetwork2Layer.setBias(tmpBias);
-        }
-
-        NeuralNetwork[] newNetworks = new NeuralNetwork[]{childNetwork1, childNetwork1};
-
-        return newNetworks;
+         return new NeuralNetwork[]{childNetwork1, childNetwork2};
     }
 
     private static void parallelSort(double[] sortBy, Object[] sortAlong) {
