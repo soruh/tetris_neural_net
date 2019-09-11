@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
-        main.train();
+        main.train(100);
     }
 
     public Main(){
@@ -24,9 +24,10 @@ public class Main {
     }
 
     public void train(int pTrainingEpisodes){
-        trainedGeneration
+        trainedGeneration = networks.clone();
         for (int i = 0; i < pTrainingEpisodes; i++) {
-            trainedGeneration = trainer.trainGeneration()
+            trainedGeneration = trainer.trainGeneration(trainedGeneration);
         }
+        //to do: save weights
     }
 }

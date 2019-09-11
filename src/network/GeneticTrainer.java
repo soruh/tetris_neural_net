@@ -24,6 +24,8 @@ public class GeneticTrainer {
         return pNetworks;
     }
 
+
+
     public NeuralNetwork[] crossover(double crack, NeuralNetwork parentNetwork1, NeuralNetwork parentNetwork2) {
 
         NeuralNetwork childNetwork1 = new NeuralNetwork();
