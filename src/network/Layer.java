@@ -15,7 +15,7 @@ public class Layer {
     private double[][] gradient;
     private double learningRate;
 
-    Random r = new Random();
+    Random rng = new Random();
 
 
     Layer(int pInputs, int pOutputs) {
@@ -48,19 +48,31 @@ public class Layer {
 
 
     void randomize() {
-        this.bias = (r.nextDouble() * 2) - 1;
+        this.bias = (rng.nextDouble() * 2) - 1;
         for (double[] values : weights) {
             for (double value : values) {
-                value = (r.nextDouble() * 2) - 1;
+                value = (rng.nextDouble() * 2) - 1;
             }
         }
     }
 
-    double getBias() {
+    public int getcOutputs() {
+        return cOutputs;
+    }
+
+    public int getcInputs() {
+        return cInputs;
+    }
+
+    public int getNWeights() {
+        return cInputs * cOutputs;
+    }
+
+    public double getBias() {
         return this.bias;
     }
 
-    double[][] getWeights() {
+    public double[][] getWeights() {
         return weights;
     }
 
