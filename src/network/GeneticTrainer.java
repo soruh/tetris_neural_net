@@ -1,5 +1,6 @@
 package network;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
@@ -24,10 +25,14 @@ public class GeneticTrainer {
         return pNetworks;
     }
 
+    public NeuralNetwork[] createNewGeneration(NeuralNetwork[] pOldGeneration){
+        ArrayList<NeuralNetwork> generation = new ArrayList<NeuralNetwork>();
+        for (int i = 0; i < pOldGeneration.length / 2; i++) {
 
+        }
+    }
 
     public NeuralNetwork[] crossover(double pCrack, NeuralNetwork parentNetwork1, NeuralNetwork parentNetwork2) {
-
         NeuralNetwork childNetwork1 = new NeuralNetwork();
         NeuralNetwork childNetwork2 = new NeuralNetwork();
 
@@ -53,8 +58,12 @@ public class GeneticTrainer {
             childNetwork1Weights[i] = childNetwork2Weights[i];
             childNetwork2Weights[i] = temp[i];
         }
+        childNetwork1.setWeightsFromArray(childNetwork1Weights);
+        childNetwork2.setWeightsFromArray(childNetwork2Weights);
+
          return new NeuralNetwork[]{childNetwork1, childNetwork2};
     }
+
 
     private static void parallelSort(double[] sortBy, Object[] sortAlong) {
         class Item {
