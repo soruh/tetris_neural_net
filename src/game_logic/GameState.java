@@ -16,7 +16,7 @@ public class GameState {
     Random rng;
 
 
-    public GameState(long pRandomSeed){
+    public GameState(Random _rng){
         grid = new int[22][10];
         ticks = 0;
         score = 0;
@@ -24,12 +24,13 @@ public class GameState {
         terminated = false;
         heldPiece = false;
 
-        rng = new Random(pRandomSeed);
+        rng = _rng;
 
         currentBlock = randomBlock();
         currentBlock.setPosition(startPosition);
         nextBlock = randomBlock();
     }
+
 
 
     public void spawnBlock(){
@@ -76,13 +77,13 @@ public class GameState {
     private int scoreForNRows(int rowsBroken, int scoreMultiplier) {
         int rawScore = 0;
         switch (rowsBroken) {
-            case 1: rawScore = 2;
-            case 2: rawScore = 5;
-            case 3: rawScore = 15;
-            case 4: rawScore = 60;
+            case 1: rawScore = 2; break;
+            case 2: rawScore = 5; break;
+            case 3: rawScore = 15; break;
+            case 4: rawScore = 60; // break;
         }
 
-        return rawScore * scoreMultiplier;
+        return 20 * rawScore * scoreMultiplier;
     }
 
     private void breakRows() {
@@ -115,9 +116,11 @@ public class GameState {
             }
         }
 
-        int scoreMultiplier = 20 * (level + 1);
+        if(rowsBroken > 0) {
+            int scoreDelta = scoreForNRows(rowsBroken, level + 1);
 
-        score += scoreForNRows(rowsBroken, scoreMultiplier);
+            score += scoreDelta;
+        }
     }
 
     private void sliceRows(int rowIndex, int nRows) {
