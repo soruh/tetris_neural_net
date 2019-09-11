@@ -148,10 +148,10 @@ public class GameState {
         heldPiece = false;
 
         for (int[] cell : cells) {
-            int x = cell[0];
-            int y = cell[1];
+            int y = cell[0];
+            int x = cell[1];
 
-            this.grid[x][y] = currentBlock.getType();
+            this.grid[y][x] = currentBlock.getType();
         }
     }
 
@@ -205,7 +205,7 @@ public class GameState {
         for(int[] cell: currentBlock.getAbsoluteCells()){
             int y = cell[0];
             int x = cell[1];
-            if(x>=0 && x<=simplifiedState[0].length && y>=0 && y<=simplifiedState.length) {
+            if(x>=0 && x<simplifiedState[0].length && y>=0 && y<simplifiedState.length) {
                 simplifiedState[y][x] = -1;
             }
         }

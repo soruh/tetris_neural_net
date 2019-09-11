@@ -84,12 +84,15 @@ public class Block {
 
 
     public int[][] getAbsoluteCells(){
-        int[][] absoluteCells = blockStates[type][rotation].clone();
-        for (int i = 0; i < absoluteCells.length; i++) {
-            for (int j = 0; j < absoluteCells[0].length; j++) {
-                absoluteCells[i][j] += position[j];
+        int[][] relativeCells = blockStates[type][rotation];
+
+        int[][] absoluteCells = new int[relativeCells.length][relativeCells[0].length];
+        for(int i=0; i<relativeCells.length; i++) {
+            for (int j = 0; j < relativeCells[i].length; j++) {
+                absoluteCells[i][j] = relativeCells[i][j] + position[j];
             }
         }
+
         return absoluteCells;
     }
 }
