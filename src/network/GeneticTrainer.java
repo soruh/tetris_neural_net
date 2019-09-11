@@ -7,9 +7,14 @@ import java.util.Random;
 
 public class GeneticTrainer {
     private FitnessFunction func;
+    private Random rng;
+    private double mutationRate;
 
-    public GeneticTrainer(FitnessFunction func) {
+    public GeneticTrainer(FitnessFunction func, double mutationRate) {
         this.func = func;
+        this.rng = new Random();
+
+        this.mutationRate = mutationRate;
     }
 
     public NeuralNetwork[] trainGeneration(NeuralNetwork[] pNetworks) {
@@ -26,10 +31,25 @@ public class GeneticTrainer {
     }
 
     public NeuralNetwork[] createNewGeneration(NeuralNetwork[] pOldGeneration){
-        ArrayList<NeuralNetwork> generation = new ArrayList<NeuralNetwork>();
-        for (int i = 0; i < pOldGeneration.length / 2; i++) {
+        NeuralNetwork[] newGeneration = new NeuralNetwork[pOldGeneration.length];
+        int center = pOldGeneration.length / 2;
+        for (int i = 0; i < center; i++) {
+            newGeneration[i] = pOldGeneration[i];
 
+            if(i%2 == 0) {
+                double pCrack = rng.nextDouble();
+                NeuralNetwork[] newNetworks = crossover(pCrack, pOldGeneration[i], pOldGeneration[i+1]);
+
+                for (NeuralNetwork net : newNetworks) {
+                    if(rng.nextDouble() <= mutationRate) net.mutate();
+                }
+
+                newGeneration[center + i] = newNetworks[0];
+                newGeneration[center + i + 1] = newNetworks[1];
+            }
         }
+
+        return newGeneration;
     }
 
     public NeuralNetwork[] crossover(double pCrack, NeuralNetwork parentNetwork1, NeuralNetwork parentNetwork2) {
@@ -50,14 +70,15 @@ public class GeneticTrainer {
 
         double[] childNetwork1Weights = childNetwork1.getWeightsAsArray();
         double[] childNetwork2Weights = childNetwork2.getWeightsAsArray();
-        double[] temp = childNetwork1Weights.clone();
 
         int crackIndex = (int) pCrack * childNetwork1Weights.length;
 
         for (int i = crackIndex; i < childNetwork1Weights.length; i++) {
+            double temp = childNetwork1Weights[i];
             childNetwork1Weights[i] = childNetwork2Weights[i];
-            childNetwork2Weights[i] = temp[i];
+            childNetwork2Weights[i] = temp;
         }
+
         childNetwork1.setWeightsFromArray(childNetwork1Weights);
         childNetwork2.setWeightsFromArray(childNetwork2Weights);
 

@@ -26,7 +26,7 @@ public class Main {
             networks[i].addLayer(new Layer(400, 40));
             networks[i].addLayer(new Layer(40, 6));
         }
-        trainer = new GeneticTrainer(FitnessFunction.tetris);
+        trainer = new GeneticTrainer(FitnessFunction.tetris, 0.1);
     }
 
     public void train(int pTrainingEpisodes){
