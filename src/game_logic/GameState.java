@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class GameState {
 
-    private int[][] grid,
+    private int[][] grid;
     private Block currentBlock, nextBlock;
     private long ticks;
     private static int[] startPosition = {20, 4};
