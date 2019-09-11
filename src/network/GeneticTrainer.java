@@ -5,26 +5,23 @@ import java.util.Comparator;
 import java.util.Random;
 
 public class GeneticTrainer {
-    private NeuralNetwork[] networks;
-    private double[] fitness;
     private FitnessFunction func;
 
-    public GeneticTrainer(int networks, FitnessFunction func) {
+    public GeneticTrainer(FitnessFunction func) {
         this.func = func;
-        this.networks = new NeuralNetwork[networks];
-        this.fitness = new double[networks];
     }
 
-    public NeuralNetwork[] trainGeneration() {
+    public NeuralNetwork[] trainGeneration(NeuralNetwork[] pNetworks) {
+        double[] fitness = new double[pNetworks.length];
         Random rng = new Random();
         long seed = rng.nextLong();
-        for (int i = 0; i < networks.length; i++) {
-            fitness[i] = func.evaluate(networks[i], seed);
+        for (int i = 0; i < pNetworks.length; i++) {
+            fitness[i] = func.evaluate(pNetworks[i], seed);
         }
 
-        parallelSort(fitness, networks);
+        parallelSort(fitness, pNetworks);
 
-        return networks;
+        return pNetworks;
     }
 
     public NeuralNetwork[] crossover(double crack, NeuralNetwork parentNetwork1, NeuralNetwork parentNetwork2) {
