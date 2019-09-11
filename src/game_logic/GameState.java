@@ -85,9 +85,9 @@ public class GameState {
     }
 
     private void breakRows() {
-        int scoreMultiplier = 20 * (level + 1);
-
+        int rowsBroken = 0;
         int consecutiveRowsBroken = 0;
+
         for(int rowIndex=0;rowIndex<grid.length;rowIndex++) {
             int[] row = grid[rowIndex];
 
@@ -101,7 +101,7 @@ public class GameState {
 
             if(hasGap) {
                 if(consecutiveRowsBroken > 0) {
-                    score += scoreForNRows(consecutiveRowsBroken, scoreMultiplier);
+                    rowsBroken += consecutiveRowsBroken;
 
                     rowIndex -= consecutiveRowsBroken;
 
@@ -113,6 +113,10 @@ public class GameState {
                 consecutiveRowsBroken++;
             }
         }
+
+        int scoreMultiplier = 20 * (level + 1);
+
+        score += scoreForNRows(rowsBroken, scoreMultiplier);
     }
 
     private void sliceRows(int rowIndex, int nRows) {
