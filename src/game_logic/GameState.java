@@ -50,8 +50,6 @@ public class GameState {
             case DOWN: {
                 boolean moved = moveIfValid(0, -1, 0);
 
-                System.out.println(moved);
-
                 if(!moved) {
                     placeBlock();
 
