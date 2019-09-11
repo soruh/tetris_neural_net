@@ -1,10 +1,10 @@
 package gui;
 
-import com.sun.webkit.ThemeClient;
 import game_logic.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.scene.*;
 import javafx.scene.canvas.*;
@@ -12,6 +12,7 @@ import javafx.scene.paint.*;
 import javafx.event.*;
 import javafx.stage.WindowEvent;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class bad_gui_to_test extends Application {
@@ -19,8 +20,11 @@ public class bad_gui_to_test extends Application {
     private Canvas canvas;
     private GraphicsContext gc;
     private Stage stage;
+    private Scene scene;
 
     private boolean oddFrame = false;
+    private ArrayList<String> inputs = new ArrayList<>();
+    private Action lastUserAction;
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -39,17 +43,41 @@ public class bad_gui_to_test extends Application {
         });
 
         Group root = new Group();
-        stage.setScene(new Scene(root));
+        scene = new Scene(root);
+        stage.setScene(scene);
 
         canvas = new Canvas(500, 1000);
         gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
         Random r = new Random();
-        tetris = new Game(r.nextLong());
-
+        //tetris = new Game(r.nextLong());
+        tetris = new Game(1);
         //gc.setFill(Color.BLUE);
         //gc.fillRect(5, 5, 40, 40);
+
+        scene.setOnKeyPressed(
+                new EventHandler<KeyEvent>() {
+                    @Override
+                    public void handle(KeyEvent keyEvent) {
+                        String code = keyEvent.getCode().toString();
+
+                        if (!inputs.contains(code)) {
+                            inputs.add(code);
+                        }
+                    }
+                }
+        );
+
+        scene.setOnKeyReleased(
+                new EventHandler<KeyEvent>() {
+                    @Override
+                    public void handle(KeyEvent keyEvent) {
+                        String code = keyEvent.getCode().toString();
+                        inputs.remove(code);
+                    }
+                }
+        );
 
         new AnimationTimer() {
             public void handle(long now) {
@@ -60,11 +88,50 @@ public class bad_gui_to_test extends Application {
             }
         }.start();
 
+
         stage.show();
     }
 
     public void runGame() {
-        if (!tetris.tick(Action.DOWN)) {
+        Action action = Action.NOTHING;
+        for (int i = 0; i < inputs.size(); i++)  {
+            boolean found = false;
+            switch (inputs.get(i)) {
+                case "LEFT":
+                    found = true;
+                    action = Action.LEFT;
+                    break;
+                case "RIGHT":
+                    found = true;
+                    action = Action.RIGHT;
+                    break;
+                case "UP":
+                    found = true;
+                    action = Action.TURN_RIGHT;
+                    break;
+                case "DOWN":
+                    found = true;
+                    action = Action.DOWN;
+                    break;
+                case "SHIFT":
+                    found = true;
+                    action = Action.LEFT;
+                    break;
+            }
+
+            if (found && lastUserAction != action) {
+                lastUserAction = action;
+                break;
+            } else {
+                action = Action.NOTHING;
+            }
+        }
+
+        if (inputs.size() == 0) {
+            lastUserAction = action;
+        }
+
+        if (!tetris.tick(action)) {
             System.out.println("Your final score is: " + tetris.getGameState().getScore());
             Platform.exit();
             System.exit(0);
