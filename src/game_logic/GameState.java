@@ -4,10 +4,10 @@ import java.util.Random;
 
 public class GameState {
 
-    private int[][] grid, previousState;
+    private int[][] grid,
     private Block currentBlock, nextBlock;
     private long ticks;
-    private static int[] startPosition = {4, 20};
+    private static int[] startPosition = {20, 4};
     private boolean terminated;
     private int score;
     private boolean heldPiece;
@@ -158,7 +158,7 @@ public class GameState {
 
     public boolean moveIfValid(int dx, int dy, int dr){
         int[] oldPosition = currentBlock.getPosition();
-        int[] newPosition = new int[]{oldPosition[0] + dx, oldPosition[1] + dy};
+        int[] newPosition = new int[]{oldPosition[0] + dy, oldPosition[1] + dx};
 
         int oldRotation = currentBlock.getRotation();
 
@@ -180,29 +180,34 @@ public class GameState {
 
     public boolean detectCollision(int[][] cells){
         for(int[] cell : cells){
-            int x = cell[0];
-            int y = cell[1];
+            int y = cell[0];
+            int x = cell[1];
 
-            if(x < 0 || x >= grid.length) return true;
-            if(y < 0 || y >= grid[0].length) return true;
+            if(x < 0 || y >= grid.length) return true;
+            if(y < 0 || x >= grid[0].length) return true;
 
 
-            if(grid[x][y] != 0) return true;
+            if(grid[y][x] != 0) return true;
         }
 
         return false;
     }
 
     public int[][] simplifyState(){
-        int[][] simplifiedState = new int[grid.length][grid[0].length];
-        simplifiedState = grid.clone();
-        for (int[] line: simplifiedState) {
-            for(int cell: line){
-                if(cell > 0) cell = 1;
+        int[][] simplifiedState = new int[grid.length - 2][grid[0].length];
+
+
+        for (int i=0;i<grid.length - 2;i++) {
+            for(int j=0;j<grid[i].length - 2;j++){
+                simplifiedState[i][j] = grid[i][j] > 0 ? 1 : 0;
             }
         }
         for(int[] cell: currentBlock.getAbsoluteCells()){
-            simplifiedState[cell[0]][cell[1]] = -1;
+            int y = cell[0];
+            int x = cell[1];
+            if(x>=0 && x<=simplifiedState[0].length && y>=0 && y<=simplifiedState.length) {
+                simplifiedState[y][x] = -1;
+            }
         }
         return simplifiedState;
     }
@@ -212,7 +217,7 @@ public class GameState {
         double[] flattenedState = new double[simplifiedState.length * simplifiedState[0].length];
         for (int i = 0; i < simplifiedState.length; i++) {
             for (int j = 0; j < simplifiedState[0].length; j++) {
-                flattenedState[(i*simplifiedState[0].length) + j] = (double)simplifiedState[i][j];
+                flattenedState[(i*simplifiedState[0].length) + j] = simplifiedState[i][j];
             }
         }
         return  flattenedState;
