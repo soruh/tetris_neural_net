@@ -1,6 +1,5 @@
 package network;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
@@ -17,17 +16,18 @@ public class GeneticTrainer {
         this.mutationRate = mutationRate;
     }
 
-    public NeuralNetwork[] trainGeneration(NeuralNetwork[] pNetworks) {
-        double[] fitness = new double[pNetworks.length];
+    public NeuralNetwork[] trainGeneration(NeuralNetwork[] pGeneration) {
+        double[] fitness = new double[pGeneration.length];
         Random rng = new Random();
         long seed = rng.nextLong();
-        for (int i = 0; i < pNetworks.length; i++) {
-            fitness[i] = func.evaluate(pNetworks[i], seed);
+        for (int i = 0; i < pGeneration.length; i++) {
+            fitness[i] = func.evaluate(pGeneration[i], seed);
         }
 
-        parallelSort(fitness, pNetworks);
+        parallelSort(fitness, pGeneration);
+        NeuralNetwork[] newGeneration = this.createNewGeneration(pGeneration);
 
-        return pNetworks;
+        return newGeneration;
     }
 
     public NeuralNetwork[] createNewGeneration(NeuralNetwork[] pOldGeneration){
@@ -41,7 +41,7 @@ public class GeneticTrainer {
                 NeuralNetwork[] newNetworks = crossover(pCrack, pOldGeneration[i], pOldGeneration[i+1]);
 
                 for (NeuralNetwork net : newNetworks) {
-                    if(rng.nextDouble() <= mutationRate) net.mutate();
+                    if(rng.nextDouble() <= mutationRate) mutate(net);
                 }
 
                 newGeneration[center + i] = newNetworks[0];
@@ -83,6 +83,15 @@ public class GeneticTrainer {
         childNetwork2.setWeightsFromArray(childNetwork2Weights);
 
          return new NeuralNetwork[]{childNetwork1, childNetwork2};
+    }
+
+
+    public void mutate(NeuralNetwork pNetwork){
+        double[] networkWeights;
+        networkWeights = pNetwork.getWeightsAsArray();
+        int mutatedWeight = rng.nextInt(networkWeights.length);
+        networkWeights[mutatedWeight] = (rng.nextDouble() * 20) - 10;
+        pNetwork.setWeightsFromArray(networkWeights);
     }
 
 
