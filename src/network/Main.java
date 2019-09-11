@@ -14,11 +14,11 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
-        main.train(150);
+        main.train(5000);
     }
 
     public Main(){
-        networks = new NeuralNetwork[40];
+        networks = new NeuralNetwork[100];
         for (int i = 0; i < networks.length; i++) {
             networks[i] = new NeuralNetwork();
             networks[i].addLayer(new Layer(200, 400));
