@@ -15,13 +15,7 @@ public class GeneticTrainer {
         this.fitness = new double[networks];
     }
 
-    public void addLayer(int inputs, int outputs) {
-        for (NeuralNetwork net : networks) {
-            net.addLayer(new Layer(inputs, outputs));
-        }
-    }
-
-    public double[] trainGeneration() {
+    public NeuralNetwork[] trainGeneration() {
         Random rng = new Random();
         long seed = rng.nextLong();
         for (int i = 0; i < networks.length; i++) {
@@ -29,6 +23,8 @@ public class GeneticTrainer {
         }
 
         parallelSort(fitness, networks);
+
+        return networks;
     }
 
     public NeuralNetwork[] crossover(double crack, NeuralNetwork parentNetwork1, NeuralNetwork parentNetwork2) {
