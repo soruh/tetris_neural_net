@@ -36,6 +36,7 @@ public class GameState {
         currentBlock = nextBlock;
         nextBlock = new Block(rng.nextInt(7));
         currentBlock.setPosition(this.startPosition);
+
         if(detectCollision(currentBlock.getAbsoluteCells())) terminated = true;
     }
 
@@ -180,8 +181,8 @@ public class GameState {
 
     public boolean detectCollision(int[][] cells){
         for(int[] cell : cells){
-            int y = cell[0];
-            int x = cell[1];
+            int x = cell[0];
+            int y = cell[1];
 
             if(x < 0 || y >= grid.length) return true;
             if(y < 0 || x >= grid[0].length) return true;
