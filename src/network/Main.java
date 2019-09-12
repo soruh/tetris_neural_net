@@ -6,29 +6,32 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.File;
 import java.util.Arrays;
 
 public class Main {
 
     private GeneticTrainer trainer;
     private NeuralNetwork[] networks;
-    private NeuralNetwork[] trainedGeneration;
-    private long startTime;
+
+    private String sessionDir = "./weights/"+System.currentTimeMillis()+"/";
 
 
     public static void main(String[] args) {
-        int trainingEpisodes = 10;
+        int trainingEpisodes = Integer.MAX_VALUE;
         int generationSize = 200;
         Main main = new Main(generationSize);
         main.train(trainingEpisodes);
     }
 
     public Main(int pGenerationSize){
-        startTime = System.currentTimeMillis();
+        new File(sessionDir).mkdirs();
+
+
         networks = new NeuralNetwork[pGenerationSize];
         for (int i = 0; i < networks.length; i++) {
             networks[i] = new NeuralNetwork();
-            networks[i].addLayer(new Layer(200, 100));
+            networks[i].addLayer(new Layer(208, 100));
             networks[i].addLayer(new Layer(100, 40));
             networks[i].addLayer(new Layer(40, 40));
             networks[i].addLayer(new Layer(40, 6));
@@ -39,22 +42,15 @@ public class Main {
     }
 
     public void train(int pTrainingEpisodes) {
-        trainedGeneration = networks.clone();
-        for (int i = 0; i < pTrainingEpisodes; i++) {
-            trainedGeneration = trainer.trainGeneration(trainedGeneration);
-            System.out.println("Generation: " + i);
-            /*if (pTrainingEpisodes % 5 == 0) {
-                final NeuralNetwork bestNetwork = trainedGeneration[0];
-                final long seed = getCurrentSeed();
-                new Thread(() -> {
-                    javafx.application.Application.launch(Gui.class);
-                    gui.setNetwork(bestNetwork, seed);
-                }).start();
-            }*/
-        }
+        NeuralNetwork[] trainedGeneration = networks.clone();
 
-        String fileName = startTime+"_"+trainer.getCurrentGeneration();
-        this.saveWeights("./weights/" + fileName, trainedGeneration[0]);
+        for (int i = 0; i < pTrainingEpisodes; i++) {
+            System.out.print("Generation: " + i + "; ");
+            trainedGeneration = trainer.trainGeneration(trainedGeneration);
+
+            if(trainer.getCurrentGeneration()%10 == 0) this.saveWeights(trainedGeneration[0]);
+        }
+        this.saveWeights(trainedGeneration[0]);
     }
 
     public NeuralNetwork getBestNetwork() {
@@ -65,8 +61,7 @@ public class Main {
         return trainer.getSeed();
     }
 
-    public void saveWeights(String path, NeuralNetwork pNetwork) {
-
+    public void saveWeights(NeuralNetwork pNetwork) {
 
         String toWrite = "";
         double[] weights = pNetwork.getWeightsAsArray();
@@ -76,17 +71,19 @@ public class Main {
         toWrite = toWrite.trim();
 
         try {
+            String path = sessionDir + trainer.getCurrentGeneration();
+
             FileWriter is = new FileWriter(path);
             BufferedWriter buffer = new BufferedWriter(is);
 
             buffer.write(toWrite);
             buffer.close();
             is.close();
+
+            System.out.println("saved as: "+path);
         } catch (Exception e) {
             System.err.println("failed to save file: "+e);
         }
-
-        System.out.println("Speichern abgeschlossen.");
     }
 
     public void loadWeights(String pfad, NeuralNetwork pNetwork)

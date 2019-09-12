@@ -117,4 +117,28 @@ public class NeuralNetwork {
             currentLayer = currentLayer.getNextLayer();
         }
     }
+
+    public NeuralNetwork clone(){
+        NeuralNetwork newNet = new NeuralNetwork();
+
+        Layer currentLayer = inputLayer;
+        while(currentLayer != null){
+            double bias = currentLayer.getBias();
+            double[][] weights = currentLayer.getWeights();
+
+            double[][] newWeights = new double[weights.length][weights[0].length];
+
+            for(int i=0;i<weights.length;i++){
+                for(int j=0;j<weights[i].length;j++){
+                    newWeights[i][j] = weights[i][j];
+                }
+            }
+
+            newNet.addLayer(new Layer(newWeights, bias));
+
+            currentLayer = currentLayer.getNextLayer();
+        }
+
+        return newNet;
+    }
 }

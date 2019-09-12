@@ -1,0 +1,18 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="tetris_neural_net:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/tetris_neural_net_jar</output-path>
+    <root id="archive" name="tetris_neural_net.jar">
+      <element id="module-output" name="tetris_neural_net" />
+      <element id="library" level="project" name="javafx.graphics" />
+      <element id="extracted-dir" path="/usr/lib/jvm/java-12-openjdk/lib/jrt-fs.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="/usr/lib/jvm/java-12-openjdk/lib/javafx-swt.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="/usr/lib/jvm/java-12-openjdk/lib/javafx.web.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="/usr/lib/jvm/java-12-openjdk/lib/javafx.base.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="/usr/lib/jvm/java-12-openjdk/lib/javafx.fxml.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="/usr/lib/jvm/java-12-openjdk/lib/javafx.media.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="/usr/lib/jvm/java-12-openjdk/lib/javafx.swing.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="/usr/lib/jvm/java-12-openjdk/lib/javafx.controls.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="/usr/lib/jvm/java-12-openjdk/lib/javafx.graphics.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

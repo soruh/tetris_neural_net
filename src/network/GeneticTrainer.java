@@ -54,22 +54,45 @@ public class GeneticTrainer {
 
     public NeuralNetwork[] createNewGeneration(NeuralNetwork[] pOldGeneration){
         NeuralNetwork[] newGeneration = new NeuralNetwork[pOldGeneration.length];
-        int center = pOldGeneration.length / 2;
-        for (int i = 0; i < center; i++) {
+        int alphaCutoff = (int)(pOldGeneration.length * ((double)2 / 10));
+        int i = 0;
+        for (; i < alphaCutoff; i++) {
+            // System.out.println("alpha: i="+i);
             newGeneration[i] = pOldGeneration[i];
+        }
 
-            if(i%2 == 0) {
-                double pCrack = rng.nextDouble();
-                NeuralNetwork[] newNetworks = crossover(pCrack, pOldGeneration[i], pOldGeneration[i+1]);
-
-                for (NeuralNetwork net : newNetworks) {
-                    if(rng.nextDouble() <= mutationRate) mutate(net);
+        int betaCutoff = (int)(pOldGeneration.length * ((double)8 / 10));
+        {
+            int j = 0;
+            int k = 0;
+            int childrenPerAlpha = (betaCutoff - alphaCutoff) / alphaCutoff;
+            // System.out.println("childrenPerAlpha: "+childrenPerAlpha);
+            for (; i < betaCutoff && j < betaCutoff; i += 2) {
+                if (k >= j + childrenPerAlpha || k >= betaCutoff) {
+                    j++;
+                    k = j + 1;
+                } else {
+                    k++;
                 }
 
-                newGeneration[center + i] = newNetworks[0];
-                newGeneration[center + i + 1] = newNetworks[1];
+                // System.out.println("beta: i="+i+" j="+j+" k="+k);
+
+                NeuralNetwork[] children = crossover(rng.nextDouble(), pOldGeneration[j], pOldGeneration[k]);
+
+
+                newGeneration[i] = children[0];
+                newGeneration[i + 1] = children[1];
             }
         }
+
+        int gammaCutoff = pOldGeneration.length;
+        for (int j=0; i + j < gammaCutoff; j++) {
+            // System.out.println("gamma: i="+i+" j="+j+" i+j="+(i+j));
+
+            newGeneration[i + j] = pOldGeneration[j].clone();
+            mutate(newGeneration[i + j]);
+        }
+
 
         return newGeneration;
     }

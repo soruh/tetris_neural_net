@@ -211,24 +211,28 @@ public class GameState {
                 simplifiedState[i][j] = grid[i][j] > 0 ? 1 : 0;
             }
         }
-        for(int[] cell: currentBlock.getAbsoluteCells()){
-            int y = cell[0];
-            int x = cell[1];
-            if(x>=0 && x<simplifiedState[0].length && y>=0 && y<simplifiedState.length) {
-                simplifiedState[y][x] = -1;
-            }
-        }
         return simplifiedState;
     }
 
     public double[] flattenedState(){
         int[][] simplifiedState = this.simplifyState();
-        double[] flattenedState = new double[simplifiedState.length * simplifiedState[0].length];
-        for (int i = 0; i < simplifiedState.length; i++) {
-            for (int j = 0; j < simplifiedState[0].length; j++) {
-                flattenedState[(i*simplifiedState[0].length) + j] = simplifiedState[i][j];
+        double[] flattenedState = new double[8 +simplifiedState.length * simplifiedState[0].length];
+
+        int[][] absoluteCells = currentBlock.getAbsoluteCells();
+        for(int i=0;i<absoluteCells.length;i++){
+            for(int j=0;j<absoluteCells[0].length;j++){
+                flattenedState[2*i + j] = absoluteCells[i][j];
             }
         }
+
+
+        for (int i = 0; i < simplifiedState.length; i++) {
+            for (int j = 0; j < simplifiedState[0].length; j++) {
+                flattenedState[8 + j + i*simplifiedState[0].length] = simplifiedState[i][j];
+            }
+        }
+
+
         return flattenedState;
     }
 
