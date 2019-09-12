@@ -29,7 +29,8 @@ public class Gui extends Application {
     private Block currentBlock;
     private ArrayList<String> inputs = new ArrayList<>();
     private Action lastUserAction;
-    private double d = 50.0;
+    private boolean isOddFrame = false;
+    private int speed = 1;
 
     private Main trainer;
     private boolean trainMode = true;
@@ -53,53 +54,41 @@ public class Gui extends Application {
         scene = new Scene(root);
         stage.setScene(scene);
 
-        /*ToolBar toolBar = new ToolBar();
-
-        Button button1 = new Button("Button 1");
-        toolBar.getItems().add(button1);
-
-        Button button2 = new Button("Button 2");
-        toolBar.getItems().add(button2);
-
-        VBox vBox = new VBox(toolBar);
-        //root.getChildren().add(vBox);*/
-
         canvas = new Canvas(250, 500);
         gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
-
         trainer = new Main(200);
         network = trainer.getBestNetwork();
-
-        trainer.loadWeights("/home/soruh/test_weights", network);
 
         Random rng = new Random();
 
         long seed = -420691337;
         // long seed = rng.nextLong();
 
-        System.out.println("seed: "+seed);
+        System.out.println("seed: " + seed);
 
         double expected_score = FitnessFunction.tetris.evaluate(network, seed);
 
-        System.out.println("expected score: "+expected_score);
-
+        System.out.println("expected score: " + expected_score);
 
         tetris = new Game(seed);
-
 
         scene.setOnKeyPressed(
                 keyEvent -> {
                     String code = keyEvent.getCode().toString();
 
-                    if (code.equals("SPACE")) {
-                        //trainMode = !trainMode;
-                        //tetris = new Game(trainer.getCurrentSeed());
-                    }
-
-                    if (code.equals("O") && inputs.contains("CTRL")) {
+                    if (code.equals("O") && inputs.contains("CONTROL")) {
                         System.out.println("OPEN COMAMAND TRIGGERED!!!");
+                    }
+                    if (code.equals("PLUS")) {
+                        speed++;
+                    }
+                    if (code.equals("MINUS")) {
+                        speed--;
+                        if (speed < 1) {
+                            speed = 1;
+                        }
                     }
 
                     if (!inputs.contains(code)) {
@@ -117,11 +106,12 @@ public class Gui extends Application {
 
         new AnimationTimer() {
             public void handle(long now) {
-
-                runGame();
-                runGame();
-
-
+                if (isOddFrame) {
+                    for (int i = 0; i < speed; i++) {
+                        runGame();
+                    }
+                }
+                isOddFrame = !isOddFrame;
             }
         }.start();
 

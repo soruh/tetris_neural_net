@@ -2,6 +2,7 @@ package network;
 
 import game_logic.Action;
 import game_logic.Game;
+import game_logic.GameState;
 
 import java.util.Random;
 
@@ -40,7 +41,9 @@ public abstract class FitnessFunction {
 
             } while(game.tick(nextAction) && (game.getGameState().getScore() <= 999999));
 
-            return game.getGameState().getScore();
+            GameState state = game.getGameState();
+            double fitness = state.getScore() + state.getBlocksPlaced() + state.getBonusFitness() - (state.getTicks() / 200);
+            return fitness;
         }
     }
 

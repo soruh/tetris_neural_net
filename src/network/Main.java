@@ -27,7 +27,6 @@ public class Main {
     public Main(int pGenerationSize){
         new File(sessionDir).mkdirs();
 
-
         networks = new NeuralNetwork[pGenerationSize];
         for (int i = 0; i < networks.length; i++) {
             networks[i] = new NeuralNetwork();
