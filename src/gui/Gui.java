@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 import javafx.scene.*;
 import javafx.scene.canvas.*;
 import javafx.scene.paint.*;
+import network.Main;
+import network.NeuralNetwork;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,10 @@ public class Gui extends Application {
     private ArrayList<String> inputs = new ArrayList<>();
     private Action lastUserAction;
     private double d = 50.0;
+
+    private Main trainer;
+    private boolean trainMode;
+    private NeuralNetwork network;
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -45,11 +51,18 @@ public class Gui extends Application {
         gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
+        trainer = new Main();
+        network = trainer.getBestNetwork();
         tetris = new Game();
 
         scene.setOnKeyPressed(
                 keyEvent -> {
                     String code = keyEvent.getCode().toString();
+
+                    if (code.equals("SPACE")) {
+                        trainMode = !trainMode;
+                        tetris = new Game(trainer.getCurrentSeed());
+                    }
 
                     if (!inputs.contains(code)) {
                         inputs.add(code);
@@ -78,61 +91,13 @@ public class Gui extends Application {
     }
 
     public void runGame() {
-        Action action = Action.NOTHING;
-        for (int i = 0; i < inputs.size(); i++)  {
-            switch (inputs.get(i)) {
-                case "LEFT":
-                    if (lastUserAction != Action.LEFT) {
-                        action = Action.LEFT;
-                        lastUserAction = Action.LEFT;
-                    }
-                    break;
-                case "RIGHT":
-                    if (lastUserAction != Action.RIGHT) {
-                        action = Action.RIGHT;
-                        lastUserAction = Action.RIGHT;
-                    }
-                    break;
-                case "UP":
-                    if (lastUserAction != Action.TURN_RIGHT) {
-                        action = Action.TURN_RIGHT;
-                        lastUserAction = Action.TURN_RIGHT;
-                    }
-                    break;
-                case "DOWN":
-                    Block newCurrentBlock = tetris.getGameState().getCurrentBlock();
-                    if (lastUserAction != Action.DOWN) {
-                        currentBlock = newCurrentBlock;
-                    }
-                    if (currentBlock == newCurrentBlock) {
-                        action = Action.DOWN;
-                        lastUserAction = Action.DOWN;
-                    }
-                    break;
-                case "SHIFT":
-                    if (lastUserAction != Action.TURN_LEFT) {
-                        action = Action.TURN_LEFT;
-                        lastUserAction = Action.TURN_LEFT;
-                    }
-                    break;
-                default:
-                    action = Action.NOTHING;
-                    lastUserAction = Action.NOTHING;
-            }
-        }
-
-        if (inputs.size() == 0) {
-            lastUserAction = action;
-        }
+        Action action = determineAction();
 
         if (!tetris.tick(action)) {
-            System.out.println("Your final score is: " + tetris.getGameState().getScore());
-            tetris = new Game();
+            reset();
             return;
         }
         GameState state = tetris.getGameState();
-
-
 
         int[][] grid = state.getGrid();
 
@@ -191,4 +156,89 @@ public class Gui extends Application {
         }
     }
 
+    private void reset() {
+        if (trainMode) {
+            trainer.train(50);
+            network = trainer.getBestNetwork();
+            tetris = new Game(trainer.getCurrentSeed());
+        } else {
+            tetris = new Game();
+        }
+
+        lastUserAction = Action.NOTHING;
+        currentBlock = null;
+    }
+
+    private Action determineAction() {
+        Action action = Action.NOTHING;
+
+        if (trainMode) {
+            double[] rawOutput = network.forwardPass(tetris.getGameState().flattenedState());
+
+            int biggestOutputIndex = 0;
+            for (int i = 0; i < rawOutput.length; i++) {
+                if (rawOutput[i] >= rawOutput[biggestOutputIndex]) biggestOutputIndex = i;
+            }
+
+            switch (biggestOutputIndex){
+                case 0: action = Action.NOTHING; break;
+                case 1: action = Action.LEFT; break;
+                case 2: action = Action.RIGHT; break;
+                case 3: action = Action.DOWN; break;
+                case 4: action = Action.TURN_LEFT; break;
+                case 5: action = Action.TURN_RIGHT; break;
+                // case 6: nextAction = Action.HOLD_PIECE; break; //Too difficult
+
+            }
+
+        } else {
+            for (int i = 0; i < inputs.size(); i++) {
+                switch (inputs.get(i)) {
+                    case "LEFT":
+                        if (lastUserAction != Action.LEFT) {
+                            action = Action.LEFT;
+                            lastUserAction = Action.LEFT;
+                        }
+                        break;
+                    case "RIGHT":
+                        if (lastUserAction != Action.RIGHT) {
+                            action = Action.RIGHT;
+                            lastUserAction = Action.RIGHT;
+                        }
+                        break;
+                    case "UP":
+                        if (lastUserAction != Action.TURN_RIGHT) {
+                            action = Action.TURN_RIGHT;
+                            lastUserAction = Action.TURN_RIGHT;
+                        }
+                        break;
+                    case "DOWN":
+                        Block newCurrentBlock = tetris.getGameState().getCurrentBlock();
+                        if (lastUserAction != Action.DOWN) {
+                            currentBlock = newCurrentBlock;
+                        }
+                        if (currentBlock == newCurrentBlock) {
+                            action = Action.DOWN;
+                            lastUserAction = Action.DOWN;
+                        }
+                        break;
+                    case "SHIFT":
+                        if (lastUserAction != Action.TURN_LEFT) {
+                            action = Action.TURN_LEFT;
+                            lastUserAction = Action.TURN_LEFT;
+                        }
+                        break;
+                    default:
+                        action = Action.NOTHING;
+                        lastUserAction = Action.NOTHING;
+                }
+            }
+
+            if (inputs.size() == 0) {
+                lastUserAction = action;
+            }
+        }
+
+        return action;
+    }
 }

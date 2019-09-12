@@ -8,6 +8,7 @@ public class GeneticTrainer {
     private FitnessFunction func;
     private Random rng;
     private double mutationRate;
+    private long seed = 1;
 
     public GeneticTrainer(FitnessFunction func, double mutationRate) {
         this.func = func;
@@ -18,14 +19,17 @@ public class GeneticTrainer {
 
     public NeuralNetwork[] trainGeneration(NeuralNetwork[] pGeneration) {
         double[] fitness = new double[pGeneration.length];
-        Random rng = new Random();
-        long seed = rng.nextLong();
+        seed = rng.nextLong();
+
+        Thread[] threads = new Thread[pGeneration.length];
         for (int i = 0; i < pGeneration.length; i++) {
+            threads[i] = new Thread() {
+            };
             fitness[i] = func.evaluate(pGeneration[i], seed);
         }
 
         parallelSort(fitness, pGeneration);
-        System.out.println(fitness[0]);
+        System.out.println("Fitness: " + fitness[0]);
         NeuralNetwork[] newGeneration = this.createNewGeneration(pGeneration);
 
         return newGeneration;
@@ -136,5 +140,9 @@ public class GeneticTrainer {
             sortBy[i] = items[i].getSortBy();
             sortAlong[i] = items[i].getSortAlong();
         }
+    }
+
+    public long getSeed() {
+        return seed;
     }
 }

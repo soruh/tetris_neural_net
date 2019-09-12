@@ -12,7 +12,6 @@ public abstract class FitnessFunction {
         public double evaluate(NeuralNetwork pNetwork, long pRandomSeed) {
 
             Game game = new Game(pRandomSeed);
-            boolean terminated = false;
             double[] rawOutput;
 
             Action nextAction;
@@ -22,7 +21,7 @@ public abstract class FitnessFunction {
 
                 int biggestOutputIndex = 0;
                 for (int i = 0; i < rawOutput.length; i++) {
-                    if (rawOutput[i] >= rawOutput[biggestOutputIndex]) biggestOutputIndex = i;
+                if (rawOutput[i] >= rawOutput[biggestOutputIndex]) biggestOutputIndex = i;
                 }
 
                 switch (biggestOutputIndex){

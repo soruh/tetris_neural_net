@@ -1,5 +1,7 @@
 package network;
 
+import gui.Gui;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -17,34 +19,43 @@ public class Main {
         main.train(150);
     }
 
-    public Main(){
-        networks = new NeuralNetwork[40];
+    public Main() {
+        networks = new NeuralNetwork[80];
         for (int i = 0; i < networks.length; i++) {
             networks[i] = new NeuralNetwork();
-            networks[i].addLayer(new Layer(200, 400));
-            networks[i].addLayer(new Layer(400, 400));
-            networks[i].addLayer(new Layer(400, 40));
+            networks[i].addLayer(new Layer(200, 100));
+            networks[i].addLayer(new Layer(100, 40));
+            networks[i].addLayer(new Layer(40, 40));
             networks[i].addLayer(new Layer(40, 6));
         }
         trainer = new GeneticTrainer(FitnessFunction.tetris, 0.1);
     }
 
-    public void train(int pTrainingEpisodes){
+    public void train(int pTrainingEpisodes) {
         trainedGeneration = networks.clone();
         for (int i = 0; i < pTrainingEpisodes; i++) {
             trainedGeneration = trainer.trainGeneration(trainedGeneration);
+            System.out.println("Generation: " + i);
         }
-        //to do: save weights
+        networks = trainedGeneration;
+        //TODO: save weights
+    }
+
+    public NeuralNetwork getBestNetwork() {
+        return networks[0];
+    }
+
+    public long getCurrentSeed() {
+        return trainer.getSeed();
     }
 
     public void saveWeights(String path, NeuralNetwork pNetwork) {
 
-
         String toWrite = "";
         double[] weights = pNetwork.getWeightsAsArray();
         toWrite += Arrays.toString(weights);
-        toWrite = toWrite.replace('[',' ');
-        toWrite = toWrite.replace(']',' ');
+        toWrite = toWrite.replace('[', ' ');
+        toWrite = toWrite.replace(']', ' ');
         toWrite = toWrite.trim();
 
         try {
@@ -61,8 +72,7 @@ public class Main {
         System.out.println("Speichern abgeschlossen.");
     }
 
-    public void loadWeights(String pfad, NeuralNetwork pNetwork)
-    {
+    public void loadWeights(String pfad, NeuralNetwork pNetwork) {
         String temp = "";
         try {
             FileReader is = new FileReader(pfad);

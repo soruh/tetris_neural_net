@@ -224,7 +224,7 @@ public class GameState {
                 flattenedState[(i*simplifiedState[0].length) + j] = simplifiedState[i][j];
             }
         }
-        return  flattenedState;
+        return flattenedState;
     }
 
     public long getTicks() { return ticks; }
