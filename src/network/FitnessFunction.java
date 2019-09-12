@@ -34,14 +34,13 @@ public abstract class FitnessFunction {
                     // case 6: nextAction = Action.HOLD_PIECE; break;
                     // we don't allow the net to use this feature, since it would be too
                     // difficult for it to learn it.
-
                     case 0:
                     default: nextAction = Action.NOTHING; break;
                 }
 
             } while(game.tick(nextAction) && (game.getGameState().getScore() <= 999999));
 
-            return game.getGameState().getBlocksPlaced() + game.getGameState().getScore();
+            return game.getGameState().getScore();
         }
     }
 

@@ -120,9 +120,7 @@ public class GameState {
         }
 
         if(rowsBroken > 0) {
-            int scoreDelta = scoreForNRows(rowsBroken, level + 1);
-
-            score += scoreDelta;
+            score += scoreForNRows(rowsBroken, level + 1);
         }
     }
 
@@ -163,12 +161,18 @@ public class GameState {
 
         heldPiece = false;
 
+
+        int minY = 20;
         for (int[] cell : cells) {
             int y = cell[0];
             int x = cell[1];
 
+            if(y < minY) minY = y;
+
             this.grid[y][x] = currentBlock.getType();
         }
+
+        score += 4 - minY / 5;
     }
 
 
