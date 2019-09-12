@@ -44,7 +44,7 @@ public class Main {
         }
 
         String fileName = startTime+"_"+trainer.getCurrentGeneration();
-        this.saveWeights("C:/Users/standard/IdeaProjects/tetris_neural_net/src/network/" + fileName, trainedGeneration[0]);
+        this.saveWeights("./weights/" + fileName, trainedGeneration[0]);
     }
 
     public NeuralNetwork getBestNetwork() {
@@ -73,7 +73,7 @@ public class Main {
             buffer.close();
             is.close();
         } catch (Exception e) {
-
+            System.err.println("failed to save file: "+e);
         }
 
         System.out.println("Speichern abgeschlossen.");
