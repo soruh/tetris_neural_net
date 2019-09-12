@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 public class Main {
 
-
     private GeneticTrainer trainer;
     private NeuralNetwork[] networks;
     private NeuralNetwork[] trainedGeneration;
@@ -43,10 +42,7 @@ public class Main {
         }
 
         String fileName = startTime+"_"+trainer.getCurrentGeneration();
-
-
-        networks = trainedGeneration;
-        //TODO: save weights
+        this.saveWeights("./weights/" + fileName, trainedGeneration[0]);
     }
 
     public NeuralNetwork getBestNetwork() {
@@ -63,8 +59,8 @@ public class Main {
         String toWrite = "";
         double[] weights = pNetwork.getWeightsAsArray();
         toWrite += Arrays.toString(weights);
-        toWrite = toWrite.replace('[', ' ');
-        toWrite = toWrite.replace(']', ' ');
+        toWrite = toWrite.replace('[',' ');
+        toWrite = toWrite.replace(']',' ');
         toWrite = toWrite.trim();
 
         try {
@@ -81,7 +77,8 @@ public class Main {
         System.out.println("Speichern abgeschlossen.");
     }
 
-    public void loadWeights(String pfad, NeuralNetwork pNetwork) {
+    public void loadWeights(String pfad, NeuralNetwork pNetwork)
+    {
         String temp = "";
         try {
             FileReader is = new FileReader(pfad);
