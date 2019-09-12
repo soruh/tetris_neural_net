@@ -1,7 +1,5 @@
 package network;
 
-import gui.Gui;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -18,15 +16,15 @@ public class Main {
 
 
     public static void main(String[] args) {
-        Main main = new Main();
-        main.train(5000);
+        int trainingEpisodes = 5;
+        int generationSize = 200;
+        Main main = new Main(generationSize);
+        main.train(trainingEpisodes);
     }
 
-    public Main() {
-        networks = new NeuralNetwork[80];
-    public Main(){
+    public Main(int pGenerationSize){
         startTime = System.currentTimeMillis();
-        networks = new NeuralNetwork[100];
+        networks = new NeuralNetwork[pGenerationSize];
         for (int i = 0; i < networks.length; i++) {
             networks[i] = new NeuralNetwork();
             networks[i].addLayer(new Layer(200, 100));
