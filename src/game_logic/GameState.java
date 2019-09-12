@@ -12,6 +12,7 @@ public class GameState {
     private int score;
     private boolean heldPiece;
     private int level;
+    private int blocksPlaced = 0;
 
     Random rng;
 
@@ -31,6 +32,8 @@ public class GameState {
         nextBlock = randomBlock();
     }
 
+
+    public int getBlocksPlaced() { return blocksPlaced; }
 
 
     public void spawnBlock(){
@@ -147,6 +150,8 @@ public class GameState {
     }
 
     public void placeBlock() {
+        blocksPlaced++;
+
         int[][] cells = currentBlock.getAbsoluteCells();
 
         heldPiece = false;
