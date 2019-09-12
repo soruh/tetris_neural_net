@@ -256,7 +256,7 @@ public class GameState {
 
     public double[] flattenedState() {
         int[][] simplifiedState = this.simplifyState();
-        double[] flattenedState = new double[8 + simplifiedState.length * simplifiedState[0].length];
+        double[] flattenedState = new double[15 + simplifiedState.length * simplifiedState[0].length];
 
         int[][] absoluteCells = currentBlock.getAbsoluteCells();
         for (int i = 0; i < absoluteCells.length; i++) {
@@ -272,6 +272,10 @@ public class GameState {
             }
         }
 
+
+        for (int i = flattenedState.length - 8; i < flattenedState.length; i++) {
+            flattenedState[i] = i == nextBlock.getType() ? 1 : 0;
+        }
 
         return flattenedState;
     }
