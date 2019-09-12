@@ -37,7 +37,7 @@ public class Main {
             networks[i].addLayer(new Layer(40, 6));
         }
 
-        double mutationRate = 0.5;
+        double mutationRate = 0.9;
 
         trainer = new GeneticTrainer(FitnessFunction.tetris, mutationRate);
 
@@ -52,13 +52,27 @@ public class Main {
             System.out.print("Seed: " + getCurrentSeed() + "; ");
             NeuralNetwork[] newTrainedGeneration = trainer.trainGeneration(trainedGeneration);
 
-            if(trainer.getCurrentGeneration()%10 == 0) this.saveWeights(trainedGeneration[0]);
 
-            System.out.println("fitness of saved network: "+FitnessFunction.tetris.evaluate(trainedGeneration[0], -420691337));
+            if(trainer.getCurrentGeneration() % 10 == 0){
+                String generationDir = sessionDir+trainer.getCurrentGeneration();
+                System.out.println("out path: "+generationDir);
+                System.out.print("saving generation... ");
+
+
+                new File(generationDir).mkdirs();
+
+                for(int n=0;n<trainedGeneration.length;n++){
+                    this.saveWeights(generationDir+"/"+n, trainedGeneration[n]);
+                }
+
+                System.out.println("done");
+            }
+
+            // System.out.println("fitness of saved network: "+FitnessFunction.tetris.evaluate(trainedGeneration[0], -420691337));
 
             trainedGeneration = newTrainedGeneration;
         }
-        this.saveWeights(trainedGeneration[0]);
+        // this.saveWeights(trainedGeneration[0]);
     }
 
     public NeuralNetwork getBestNetwork() {
@@ -69,7 +83,7 @@ public class Main {
         return trainer.getSeed();
     }
 
-    public void saveWeights(NeuralNetwork pNetwork) {
+    public void saveWeights(String path, NeuralNetwork pNetwork) {
 
         String toWrite = "";
         double[] weights = pNetwork.getWeightsAsArray();
@@ -79,7 +93,6 @@ public class Main {
         toWrite = toWrite.trim();
 
         try {
-            String path = sessionDir + trainer.getCurrentGeneration();
 
             FileWriter is = new FileWriter(path);
             BufferedWriter buffer = new BufferedWriter(is);
@@ -88,7 +101,7 @@ public class Main {
             buffer.close();
             is.close();
 
-            System.out.println("saved as: "+path);
+            // System.out.println("saved as: "+path);
         } catch (Exception e) {
             System.err.println("failed to save file: "+e);
         }

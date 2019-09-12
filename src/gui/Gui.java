@@ -11,10 +11,12 @@ import javafx.stage.Stage;
 import javafx.scene.*;
 import javafx.scene.canvas.*;
 import javafx.scene.paint.*;
+import network.FitnessFunction;
 import network.Main;
 import network.NeuralNetwork;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Gui extends Application {
     private Game tetris;
@@ -23,14 +25,14 @@ public class Gui extends Application {
     private Stage stage;
     private Scene scene;
 
-    private boolean oddFrame = false;
+
     private Block currentBlock;
     private ArrayList<String> inputs = new ArrayList<>();
     private Action lastUserAction;
     private double d = 50.0;
 
     private Main trainer;
-    private boolean trainMode;
+    private boolean trainMode = true;
     private NeuralNetwork network;
 
     public static void main(String[] args) {
@@ -66,9 +68,26 @@ public class Gui extends Application {
         gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
+
         trainer = new Main(200);
         network = trainer.getBestNetwork();
-        tetris = new Game();
+
+        trainer.loadWeights("/home/soruh/test_weights", network);
+
+        Random rng = new Random();
+
+        long seed = -420691337;
+        // long seed = rng.nextLong();
+
+        System.out.println("seed: "+seed);
+
+        double expected_score = FitnessFunction.tetris.evaluate(network, seed);
+
+        System.out.println("expected score: "+expected_score);
+
+
+        tetris = new Game(seed);
+
 
         scene.setOnKeyPressed(
                 keyEvent -> {
@@ -98,10 +117,11 @@ public class Gui extends Application {
 
         new AnimationTimer() {
             public void handle(long now) {
-                if (oddFrame) {
-                    runGame();
-                }
-                oddFrame = !oddFrame;
+
+                runGame();
+                runGame();
+
+
             }
         }.start();
 
@@ -110,17 +130,23 @@ public class Gui extends Application {
     }
 
     public void setNetwork(NeuralNetwork pNetwork, long pSeed) {
-        network = pNetwork;
-        tetris = new Game(pSeed);
+        tetris = new Game(-420691337);
     }
 
     public void runGame() {
         Action action = determineAction();
 
+
+
         if (!tetris.tick(action)) {
-            reset();
+
+            System.out.println("resulting score: "+ tetris.getGameState().getScore());
+
+
+            System.exit(-1);
             return;
         }
+
         GameState state = tetris.getGameState();
 
         int[][] grid = state.getGrid();
@@ -184,7 +210,7 @@ public class Gui extends Application {
         if (trainMode) {
 
         } else {
-            tetris = new Game();
+            tetris = new Game(-420691337);
         }
 
         lastUserAction = Action.NOTHING;
