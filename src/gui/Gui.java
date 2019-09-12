@@ -4,6 +4,9 @@ import game_logic.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.control.Button;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.*;
 import javafx.scene.canvas.*;
@@ -47,6 +50,17 @@ public class Gui extends Application {
         scene = new Scene(root);
         stage.setScene(scene);
 
+        /*ToolBar toolBar = new ToolBar();
+
+        Button button1 = new Button("Button 1");
+        toolBar.getItems().add(button1);
+
+        Button button2 = new Button("Button 2");
+        toolBar.getItems().add(button2);
+
+        VBox vBox = new VBox(toolBar);
+        //root.getChildren().add(vBox);*/
+
         canvas = new Canvas(250, 500);
         gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
@@ -62,6 +76,10 @@ public class Gui extends Application {
                     if (code.equals("SPACE")) {
                         //trainMode = !trainMode;
                         //tetris = new Game(trainer.getCurrentSeed());
+                    }
+
+                    if (code.equals("O") && inputs.contains("CTRL")) {
+                        System.out.println("OPEN COMAMAND TRIGGERED!!!");
                     }
 
                     if (!inputs.contains(code)) {
