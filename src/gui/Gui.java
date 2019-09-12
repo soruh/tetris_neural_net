@@ -37,6 +37,7 @@ public class Gui extends Application {
         Application.launch(args);
     }
 
+
     @Override
     public void start(Stage pStage) {
         stage = pStage;
