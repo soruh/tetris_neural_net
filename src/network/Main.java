@@ -106,7 +106,7 @@ public class Main {
         }
     }
 
-    public void loadWeights(String path, NeuralNetwork pNetwork)
+    public static void loadWeights(String path, NeuralNetwork pNetwork)
     {
         System.out.println("loading net at: "+path);
         String temp = "";
@@ -119,13 +119,13 @@ public class Main {
         } catch (Exception e) {
             System.out.println("failed to load net: "+e);
         }
+
+
         String[] strValues = temp.split(",");
         double[] values = new double[strValues.length];
         for (int i = 0; i < strValues.length; i++) {
             values[i] = Double.valueOf(strValues[i]);
         }
-
-
 
         pNetwork.setWeightsFromArray(values);
 

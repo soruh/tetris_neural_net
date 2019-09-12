@@ -8,7 +8,7 @@ public class Layer {
     private Layer next = null, previous = null;
     private double[][] weights;
     private ActivationFunction func;
-    private double bias = 0;
+    private double[] bias;
     private double[] lastOutputs;
     private double[] lastInputs;
     private double[] deltas;
@@ -28,11 +28,12 @@ public class Layer {
         this.deltas = new double[cOutputs];
         this.lastInputs = new double[cInputs];
         this.lastOutputs = new double[cOutputs];
+        this.bias = new double[cOutputs];
 
         this.randomize();
     }
 
-    Layer(double[][] pWeights, double pBias) {
+    Layer(double[][] pWeights, double[] pBias) {
         this.func = ActivationFunction.sigmoid;
 
         this.weights = pWeights;
@@ -48,7 +49,9 @@ public class Layer {
 
 
     void randomize() {
-        this.bias = (rng.nextDouble() * 2) - 1;
+        for (int i = 0; i < bias.length; i++) {
+            bias[i] = rng.nextDouble();
+        }
         for (int i = 0; i < weights.length; i++) {
             for (int j = 0; j < weights[i].length; j++) {
                 weights[i][j] = (rng.nextDouble() * 2) - 1;
@@ -68,7 +71,7 @@ public class Layer {
         return cInputs * cOutputs;
     }
 
-    public double getBias() {
+    public double[] getBias() {
         return this.bias;
     }
 
@@ -100,7 +103,7 @@ public class Layer {
         return learningRate;
     }
 
-    void setBias(double pBias) {
+    void setBias(double[] pBias) {
         this.bias = pBias;
     }
 
@@ -133,7 +136,7 @@ public class Layer {
                 for (int j = 0; j < this.cInputs; j++) {
                     result[i] += weights[i][j] * pInput[j];
                 }
-                result[i] += bias;
+                result[i] += bias[i];
                 result[i] = func.compute(result[i]);
             }
             lastOutputs = result;

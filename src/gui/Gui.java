@@ -1,12 +1,11 @@
 package gui;
 
 import game_logic.*;
+import game_logic.Action;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.control.Button;
-import javafx.scene.control.ToolBar;
-import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.*;
 import javafx.scene.canvas.*;
@@ -15,6 +14,7 @@ import network.FitnessFunction;
 import network.Main;
 import network.NeuralNetwork;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -25,16 +25,12 @@ public class Gui extends Application {
     private Stage stage;
     private Scene scene;
 
-
-    private Block currentBlock;
     private ArrayList<String> inputs = new ArrayList<>();
-    private Action lastUserAction;
     private boolean isOddFrame = false;
     private int speed = 1;
 
-    private Main trainer;
-    private boolean trainMode = true;
     private NeuralNetwork network;
+    private final FileChooser fileChooser = new FileChooser();
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -58,13 +54,8 @@ public class Gui extends Application {
         gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
-        trainer = new Main(200);
-        network = trainer.getBestNetwork();
-
         Random rng = new Random();
-
-        long seed = -420691337;
-        // long seed = rng.nextLong();
+        long seed = rng.nextLong();
 
         System.out.println("seed: " + seed);
 
@@ -80,12 +71,15 @@ public class Gui extends Application {
 
                     if (code.equals("O") && inputs.contains("CONTROL")) {
                         System.out.println("OPEN COMAMAND TRIGGERED!!!");
+                        File file = fileChooser.showOpenDialog(stage);
+                        Main.loadWeights(file.getPath(), network);
+                        tetris = new Game(rng.nextLong());
                     }
                     if (code.equals("PLUS")) {
-                        speed++;
+                        speed *= 2;
                     }
                     if (code.equals("MINUS")) {
-                        speed--;
+                        speed /= 2;
                         if (speed < 1) {
                             speed = 1;
                         }
@@ -106,12 +100,12 @@ public class Gui extends Application {
 
         new AnimationTimer() {
             public void handle(long now) {
-                if (isOddFrame) {
-                    for (int i = 0; i < speed; i++) {
+                for (int i = 0; i < speed; i++) {
+                    if (isOddFrame) {
                         runGame();
                     }
+                    isOddFrame = !isOddFrame;
                 }
-                isOddFrame = !isOddFrame;
             }
         }.start();
 
@@ -119,20 +113,11 @@ public class Gui extends Application {
         stage.show();
     }
 
-    public void setNetwork(NeuralNetwork pNetwork, long pSeed) {
-        tetris = new Game(-420691337);
-    }
-
     public void runGame() {
         Action action = determineAction();
 
-
-
         if (!tetris.tick(action)) {
-
-            System.out.println("resulting score: "+ tetris.getGameState().getScore());
-
-
+            System.out.println("resulting score: " + tetris.getGameState().getScore());
             System.exit(-1);
             return;
         }
@@ -164,7 +149,7 @@ public class Gui extends Application {
                 int brightness = 110;
                 switch (color) {
                     case 0:
-                        gc.setFill(Color.rgb(240, 240, 240));
+                        gc.setFill(Color.rgb(245, 245, 245));
                         break;
                     case 1:
                         gc.setFill(Color.rgb(0, 2 * brightness, 2 * brightness));
@@ -196,87 +181,37 @@ public class Gui extends Application {
         }
     }
 
-    private void reset() {
-        if (trainMode) {
-
-        } else {
-            tetris = new Game(-420691337);
-        }
-
-        lastUserAction = Action.NOTHING;
-        currentBlock = null;
-    }
-
     private Action determineAction() {
         Action action = Action.NOTHING;
+        double[] rawOutput = network.forwardPass(tetris.getGameState().flattenedState());
 
-        if (trainMode) {
-            double[] rawOutput = network.forwardPass(tetris.getGameState().flattenedState());
-
-            int biggestOutputIndex = 0;
-            for (int i = 0; i < rawOutput.length; i++) {
-                if (rawOutput[i] >= rawOutput[biggestOutputIndex]) biggestOutputIndex = i;
-            }
-
-            switch (biggestOutputIndex){
-                case 0: action = Action.NOTHING; break;
-                case 1: action = Action.LEFT; break;
-                case 2: action = Action.RIGHT; break;
-                case 3: action = Action.DOWN; break;
-                case 4: action = Action.TURN_LEFT; break;
-                case 5: action = Action.TURN_RIGHT; break;
-                // case 6: nextAction = Action.HOLD_PIECE; break; //Too difficult
-
-            }
-
-        } else {
-            for (int i = 0; i < inputs.size(); i++) {
-                switch (inputs.get(i)) {
-                    case "LEFT":
-                        if (lastUserAction != Action.LEFT) {
-                            action = Action.LEFT;
-                            lastUserAction = Action.LEFT;
-                        }
-                        break;
-                    case "RIGHT":
-                        if (lastUserAction != Action.RIGHT) {
-                            action = Action.RIGHT;
-                            lastUserAction = Action.RIGHT;
-                        }
-                        break;
-                    case "UP":
-                        if (lastUserAction != Action.TURN_RIGHT) {
-                            action = Action.TURN_RIGHT;
-                            lastUserAction = Action.TURN_RIGHT;
-                        }
-                        break;
-                    case "DOWN":
-                        Block newCurrentBlock = tetris.getGameState().getCurrentBlock();
-                        if (lastUserAction != Action.DOWN) {
-                            currentBlock = newCurrentBlock;
-                        }
-                        if (currentBlock == newCurrentBlock) {
-                            action = Action.DOWN;
-                            lastUserAction = Action.DOWN;
-                        }
-                        break;
-                    case "SHIFT":
-                        if (lastUserAction != Action.TURN_LEFT) {
-                            action = Action.TURN_LEFT;
-                            lastUserAction = Action.TURN_LEFT;
-                        }
-                        break;
-                    default:
-                        action = Action.NOTHING;
-                        lastUserAction = Action.NOTHING;
-                }
-            }
-
-            if (inputs.size() == 0) {
-                lastUserAction = action;
-            }
+        int biggestOutputIndex = 0;
+        for (int i = 0; i < rawOutput.length; i++) {
+            if (rawOutput[i] >= rawOutput[biggestOutputIndex]) biggestOutputIndex = i;
         }
 
+        switch (biggestOutputIndex) {
+            case 0:
+                action = Action.NOTHING;
+                break;
+            case 1:
+                action = Action.LEFT;
+                break;
+            case 2:
+                action = Action.RIGHT;
+                break;
+            case 3:
+                action = Action.DOWN;
+                break;
+            case 4:
+                action = Action.TURN_LEFT;
+                break;
+            case 5:
+                action = Action.TURN_RIGHT;
+                break;
+            // case 6: nextAction = Action.HOLD_PIECE; break; //Too difficult
+
+        }
         return action;
     }
 }

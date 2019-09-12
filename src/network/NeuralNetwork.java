@@ -74,70 +74,68 @@ public class NeuralNetwork {
         }
     }
 
-    public double[] getWeightsAsArray()
-    {
+    public double[] getWeightsAsArray() {
         ArrayList<Double> w = new ArrayList<>();
         Layer curr = inputLayer;
 
-        while( curr != null )
-        {
+        while (curr != null) {
             double[][] temp = curr.getWeights();
-            for( int i = 0; i < temp.length; i++ )
-            {
-                for( int j = 0; j < temp[i].length; j++)
-                {
+            for (int i = 0; i < temp.length; i++) {
+                for (int j = 0; j < temp[i].length; j++) {
                     w.add(temp[i][j]);
                 }
+                w.add(curr.getBias()[i]);
             }
-            w.add(curr.getBias());
             curr = curr.getNextLayer();
         }
 
-        double[] arr =  new double[w.size()];
-        for( int i = 0; i < arr.length; i++)
+        double[] arr = new double[w.size()];
+        for (int i = 0; i < arr.length; i++)
             arr[i] = w.get(i);
 
         return arr;
     }
 
-    public void setWeightsFromArray(double[] w)
-    {
+    public void setWeightsFromArray(double[] w) {
         Layer curr = inputLayer;
         int index = 0;
 
-        while( curr != null )
-        {
-            for( int i = 0; i < curr.getWeights().length; i++ )
-            {
-                for( int j = 0; j < curr.getWeights()[i].length; j++)
-                {
+        while (curr != null) {
+            double[] bias = new double[curr.getWeights().length];
+            for (int i = 0; i < curr.getWeights().length; i++) {
+                for (int j = 0; j < curr.getWeights()[i].length; j++) {
                     curr.getWeights()[i][j] = w[index];
                     index++;
                 }
+                bias[i] = w[index];
+                index++;
             }
-            curr.setBias(w[index]);
-            index++;
             curr = curr.getNextLayer();
         }
     }
 
-    public NeuralNetwork clone(){
+    public NeuralNetwork clone() {
         NeuralNetwork newNet = new NeuralNetwork();
 
         Layer currentLayer = inputLayer;
-        while(currentLayer != null){
-            double bias = currentLayer.getBias();
+        while (currentLayer != null) {
+            double[] bias = currentLayer.getBias();
             double[][] weights = currentLayer.getWeights();
 
+            double[] newBias = new double[bias.length];
             double[][] newWeights = new double[weights.length][weights[0].length];
 
-            for(int i=0;i<weights.length;i++){
-                for(int j=0;j<weights[i].length;j++){
+            for (int i = 0; i < weights.length; i++) {
+                for (int j = 0; j < weights[i].length; j++) {
                     newWeights[i][j] = weights[i][j];
                 }
             }
 
-            newNet.addLayer(new Layer(newWeights, bias));
+            for (int i = 0; i < bias.length; i++) {
+                newBias[i] = bias[i];
+            }
+
+            newNet.addLayer(new Layer(newWeights, newBias));
 
             currentLayer = currentLayer.getNextLayer();
         }

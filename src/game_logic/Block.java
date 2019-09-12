@@ -1,6 +1,5 @@
 package game_logic;
 
-
 public class Block {
     private static final int[][][][] blockStates = new int[][][][] {
             // Empty
@@ -71,8 +70,8 @@ public class Block {
         position = new int[2];
     }
 
-
     public void setPosition(int[] position){ this.position = position; }
+
     public void setPosition(int xPosition, int yPosition){ this.position = new int[]{xPosition, yPosition}; }
 
     public void setRotation(int pRotation){ this.rotation = pRotation; this.rotation = this.rotation % 4; }
