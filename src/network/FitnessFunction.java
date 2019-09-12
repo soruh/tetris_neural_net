@@ -39,7 +39,7 @@ public abstract class FitnessFunction {
 
             } while(game.tick(nextAction) && (game.getGameState().getScore() <= 999999));
 
-            return game.getGameState().getTicks() + game.getGameState().getScore();
+            return game.getGameState().getBlocksPlaced() + game.getGameState().getScore();
         }
     }
 

@@ -10,17 +10,23 @@ import java.util.Arrays;
 
 public class Main {
 
+
     private GeneticTrainer trainer;
     private NeuralNetwork[] networks;
     private NeuralNetwork[] trainedGeneration;
+    private long startTime;
+
 
     public static void main(String[] args) {
         Main main = new Main();
-        main.train(150);
+        main.train(5000);
     }
 
     public Main() {
         networks = new NeuralNetwork[80];
+    public Main(){
+        startTime = System.currentTimeMillis();
+        networks = new NeuralNetwork[100];
         for (int i = 0; i < networks.length; i++) {
             networks[i] = new NeuralNetwork();
             networks[i].addLayer(new Layer(200, 100));
@@ -37,6 +43,10 @@ public class Main {
             trainedGeneration = trainer.trainGeneration(trainedGeneration);
             System.out.println("Generation: " + i);
         }
+
+        String fileName = startTime+"_"+trainer.getCurrentGeneration();
+
+
         networks = trainedGeneration;
         //TODO: save weights
     }
@@ -50,6 +60,7 @@ public class Main {
     }
 
     public void saveWeights(String path, NeuralNetwork pNetwork) {
+
 
         String toWrite = "";
         double[] weights = pNetwork.getWeightsAsArray();

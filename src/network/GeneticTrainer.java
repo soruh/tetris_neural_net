@@ -9,6 +9,7 @@ public class GeneticTrainer {
     private Random rng;
     private double mutationRate;
     private long seed = 1;
+    private int currentGeneration = 0;
 
     public GeneticTrainer(FitnessFunction func, double mutationRate) {
         this.func = func;
@@ -31,6 +32,8 @@ public class GeneticTrainer {
         parallelSort(fitness, pGeneration);
         System.out.println("Fitness: " + fitness[0]);
         NeuralNetwork[] newGeneration = this.createNewGeneration(pGeneration);
+
+        currentGeneration++;
 
         return newGeneration;
     }
@@ -140,6 +143,10 @@ public class GeneticTrainer {
             sortBy[i] = items[i].getSortBy();
             sortAlong[i] = items[i].getSortAlong();
         }
+    }
+
+    public int getCurrentGeneration() {
+        return currentGeneration;
     }
 
     public long getSeed() {
