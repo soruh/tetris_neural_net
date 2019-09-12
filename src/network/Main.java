@@ -1,5 +1,7 @@
 package network;
 
+import gui.Gui;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -8,7 +10,6 @@ import java.util.Arrays;
 
 public class Main {
 
-
     private GeneticTrainer trainer;
     private NeuralNetwork[] networks;
     private NeuralNetwork[] trainedGeneration;
@@ -16,7 +17,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        int trainingEpisodes = 5;
+        int trainingEpisodes = 10;
         int generationSize = 200;
         Main main = new Main(generationSize);
         main.train(trainingEpisodes);
@@ -40,6 +41,14 @@ public class Main {
         for (int i = 0; i < pTrainingEpisodes; i++) {
             trainedGeneration = trainer.trainGeneration(trainedGeneration);
             System.out.println("Generation: " + i);
+            /*if (pTrainingEpisodes % 5 == 0) {
+                final NeuralNetwork bestNetwork = trainedGeneration[0];
+                final long seed = getCurrentSeed();
+                new Thread(() -> {
+                    javafx.application.Application.launch(Gui.class);
+                    gui.setNetwork(bestNetwork, seed);
+                }).start();
+            }*/
         }
 
         String fileName = startTime+"_"+trainer.getCurrentGeneration();
@@ -58,7 +67,6 @@ public class Main {
     }
 
     public void saveWeights(String path, NeuralNetwork pNetwork) {
-
 
         String toWrite = "";
         double[] weights = pNetwork.getWeightsAsArray();

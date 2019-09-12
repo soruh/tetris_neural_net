@@ -24,9 +24,23 @@ public class GeneticTrainer {
 
         Thread[] threads = new Thread[pGeneration.length];
         for (int i = 0; i < pGeneration.length; i++) {
-            threads[i] = new Thread() {
-            };
-            fitness[i] = func.evaluate(pGeneration[i], seed);
+            final int generation = i;
+            threads[i] = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    fitness[generation] = func.evaluate(pGeneration[generation], seed);
+                }
+            });
+
+            threads[i].start();
+        }
+
+        for (int i = 0; i < pGeneration.length; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         parallelSort(fitness, pGeneration);

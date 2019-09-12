@@ -51,7 +51,7 @@ public class Gui extends Application {
         gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
-        trainer = new Main();
+        trainer = new Main(80);
         network = trainer.getBestNetwork();
         tetris = new Game();
 
@@ -60,8 +60,8 @@ public class Gui extends Application {
                     String code = keyEvent.getCode().toString();
 
                     if (code.equals("SPACE")) {
-                        trainMode = !trainMode;
-                        tetris = new Game(trainer.getCurrentSeed());
+                        //trainMode = !trainMode;
+                        //tetris = new Game(trainer.getCurrentSeed());
                     }
 
                     if (!inputs.contains(code)) {
@@ -88,6 +88,11 @@ public class Gui extends Application {
 
 
         stage.show();
+    }
+
+    public void setNetwork(NeuralNetwork pNetwork, long pSeed) {
+        network = pNetwork;
+        tetris = new Game(pSeed);
     }
 
     public void runGame() {
@@ -158,9 +163,7 @@ public class Gui extends Application {
 
     private void reset() {
         if (trainMode) {
-            trainer.train(50);
-            network = trainer.getBestNetwork();
-            tetris = new Game(trainer.getCurrentSeed());
+
         } else {
             tetris = new Game();
         }
