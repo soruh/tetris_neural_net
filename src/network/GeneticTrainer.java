@@ -117,15 +117,15 @@ public class GeneticTrainer {
 
         while (network1Layer != null) {
 
-            childNetwork1.addLayer(new Layer(network1Layer.getWeights().clone(), network1Layer.getBias()));
-            childNetwork2.addLayer(new Layer(network2Layer.getWeights().clone(), network2Layer.getBias()));
+            childNetwork1.addLayer(new Layer(network1Layer.getcInputs(), network1Layer.getcOutputs()));
+            childNetwork2.addLayer(new Layer(network2Layer.getcInputs(), network2Layer.getcOutputs()));
 
             network1Layer = network1Layer.getNextLayer();
             network2Layer = network2Layer.getNextLayer();
         }
 
-        double[] childNetwork1Weights = childNetwork1.getWeightsAsArray();
-        double[] childNetwork2Weights = childNetwork2.getWeightsAsArray();
+        double[] childNetwork1Weights = parentNetwork1.getWeightsAsArray().clone();
+        double[] childNetwork2Weights = parentNetwork2.getWeightsAsArray().clone();
 
         int crackIndex = (int) pCrack * childNetwork1Weights.length;
 

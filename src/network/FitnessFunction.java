@@ -25,6 +25,7 @@ public abstract class FitnessFunction {
                 }
 
                 switch (biggestOutputIndex){
+
                     case 1: nextAction = Action.LEFT; break;
                     case 2: nextAction = Action.RIGHT; break;
                     case 3: nextAction = Action.DOWN; break;
@@ -33,8 +34,9 @@ public abstract class FitnessFunction {
                     // case 6: nextAction = Action.HOLD_PIECE; break;
                     // we don't allow the net to use this feature, since it would be too
                     // difficult for it to learn it.
-                    default:
-                    case 0: nextAction = Action.NOTHING; break;
+
+                    case 0:
+                    default: nextAction = Action.NOTHING; break;
                 }
 
             } while(game.tick(nextAction) && (game.getGameState().getScore() <= 999999));

@@ -77,11 +77,11 @@ public class NeuralNetwork {
     public double[] getWeightsAsArray()
     {
         ArrayList<Double> w = new ArrayList<>();
-        Layer currentLayer = inputLayer;
+        Layer curr = inputLayer;
 
-        while( currentLayer != null )
+        while( curr != null )
         {
-            double[][] temp = currentLayer.getWeights();
+            double[][] temp = curr.getWeights();
             for( int i = 0; i < temp.length; i++ )
             {
                 for( int j = 0; j < temp[i].length; j++)
@@ -89,7 +89,8 @@ public class NeuralNetwork {
                     w.add(temp[i][j]);
                 }
             }
-            currentLayer = currentLayer.getNextLayer();
+            w.add(curr.getBias());
+            curr = curr.getNextLayer();
         }
 
         double[] arr =  new double[w.size()];
@@ -101,20 +102,22 @@ public class NeuralNetwork {
 
     public void setWeightsFromArray(double[] w)
     {
-        Layer currentLayer = inputLayer;
+        Layer curr = inputLayer;
         int index = 0;
 
-        while( currentLayer != null )
+        while( curr != null )
         {
-            for( int i = 0; i < currentLayer.getWeights().length; i++ )
+            for( int i = 0; i < curr.getWeights().length; i++ )
             {
-                for( int j = 0; j < currentLayer.getWeights()[i].length; j++)
+                for( int j = 0; j < curr.getWeights()[i].length; j++)
                 {
-                    currentLayer.getWeights()[i][j] = w[index];
+                    curr.getWeights()[i][j] = w[index];
                     index++;
                 }
             }
-            currentLayer = currentLayer.getNextLayer();
+            curr.setBias(w[index]);
+            index++;
+            curr = curr.getNextLayer();
         }
     }
 

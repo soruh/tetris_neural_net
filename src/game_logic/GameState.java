@@ -138,8 +138,15 @@ public class GameState {
         }
     }
 
-    private Block randomBlock(){
-        return new Block(rng.nextInt(7) + 1);
+    private Block randomBlock() {
+        /*
+        for(int i=0;i<100;i++){
+            System.out.print(", "+ (rng.nextInt(7) +1));
+        }
+        System.exit(-1);
+        */
+        int[] blocks = {6, 5, 4, 7, 1, 3, 7, 1, 1, 7, 2, 5, 5, 2, 7, 7, 4, 5, 2, 1, 6, 6, 1, 4, 5, 6, 2, 6, 1, 7, 7, 3, 1, 3, 2, 6, 7, 4, 3, 6, 5, 1, 4, 3, 7, 5, 7, 5, 5, 7, 7, 1, 7, 7, 7, 5, 4, 1, 5, 2, 5, 2, 5, 2, 4, 1, 4, 4, 1, 5, 1, 4, 7, 2, 7, 5, 1, 4, 1, 7, 7, 6, 3, 4, 4, 1, 7, 7, 5, 4, 1, 2, 7, 7, 7, 4, 5, 6, 7, 7};
+        return new Block(blocks[blocksPlaced % blocks.length]);
     }
 
     public void spawn (int pBlock){

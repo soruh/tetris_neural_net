@@ -36,9 +36,12 @@ public class Main {
             networks[i].addLayer(new Layer(40, 40));
             networks[i].addLayer(new Layer(40, 6));
         }
-        trainer = new GeneticTrainer(FitnessFunction.tetris, 0.5);
 
-        System.out.println("constructed Trainer with mutationRate: "+0.1+" pGenerationSize: "+pGenerationSize);
+        double mutationRate = 0.5;
+
+        trainer = new GeneticTrainer(FitnessFunction.tetris, mutationRate);
+
+        System.out.println("constructed Trainer with mutationRate: "+mutationRate+" pGenerationSize: "+pGenerationSize);
     }
 
     public void train(int pTrainingEpisodes) {
@@ -47,9 +50,13 @@ public class Main {
         for (int i = 0; i < pTrainingEpisodes; i++) {
             System.out.print("Generation: " + i + "; ");
             System.out.print("Seed: " + getCurrentSeed() + "; ");
-            trainedGeneration = trainer.trainGeneration(trainedGeneration);
+            NeuralNetwork[] newTrainedGeneration = trainer.trainGeneration(trainedGeneration);
 
             if(trainer.getCurrentGeneration()%10 == 0) this.saveWeights(trainedGeneration[0]);
+
+            System.out.println("fitness of saved network: "+FitnessFunction.tetris.evaluate(trainedGeneration[0], -420691337));
+
+            trainedGeneration = newTrainedGeneration;
         }
         this.saveWeights(trainedGeneration[0]);
     }
@@ -87,22 +94,26 @@ public class Main {
         }
     }
 
-    public void loadWeights(String pfad, NeuralNetwork pNetwork)
+    public void loadWeights(String path, NeuralNetwork pNetwork)
     {
+        System.out.println("loading net at: "+path);
         String temp = "";
         try {
-            FileReader is = new FileReader(pfad);
+            FileReader is = new FileReader(path);
             BufferedReader buffer = new BufferedReader(is);
             temp = buffer.readLine();
             buffer.close();
             is.close();
         } catch (Exception e) {
+            System.out.println("failed to load net: "+e);
         }
         String[] strValues = temp.split(",");
         double[] values = new double[strValues.length];
         for (int i = 0; i < strValues.length; i++) {
             values[i] = Double.valueOf(strValues[i]);
         }
+
+
 
         pNetwork.setWeightsFromArray(values);
 
