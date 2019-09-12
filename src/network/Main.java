@@ -15,7 +15,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        int trainingEpisodes = 5;
+        int trainingEpisodes = 2;
         int generationSize = 200;
         Main main = new Main(generationSize);
         main.train(trainingEpisodes);
@@ -42,7 +42,7 @@ public class Main {
         }
 
         String fileName = startTime+"_"+trainer.getCurrentGeneration();
-        this.saveWeights("./weights/" + fileName, trainedGeneration[0]);
+        this.saveWeights("C:/Users/standard/IdeaProjects/tetris_neural_net/src/network/" + fileName, trainedGeneration[0]);
     }
 
     public NeuralNetwork getBestNetwork() {
