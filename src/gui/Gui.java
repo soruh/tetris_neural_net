@@ -51,7 +51,7 @@ public class Gui extends Application {
         gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
 
-        trainer = new Main();
+        trainer = new Main(200);
         network = trainer.getBestNetwork();
         tetris = new Game();
 

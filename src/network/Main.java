@@ -32,6 +32,8 @@ public class Main {
             networks[i].addLayer(new Layer(40, 6));
         }
         trainer = new GeneticTrainer(FitnessFunction.tetris, 0.1);
+
+        System.out.println("constructed Trainer with mutationRate: "+0.1+" pGenerationSize: "+pGenerationSize);
     }
 
     public void train(int pTrainingEpisodes) {
