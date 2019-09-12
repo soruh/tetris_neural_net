@@ -8,9 +8,12 @@ import java.util.Arrays;
 
 public class Main {
 
+
     private GeneticTrainer trainer;
     private NeuralNetwork[] networks;
     private NeuralNetwork[] trainedGeneration;
+    private long startTime;
+
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -18,6 +21,7 @@ public class Main {
     }
 
     public Main(){
+        startTime = System.currentTimeMillis();
         networks = new NeuralNetwork[100];
         for (int i = 0; i < networks.length; i++) {
             networks[i] = new NeuralNetwork();
@@ -34,7 +38,10 @@ public class Main {
         for (int i = 0; i < pTrainingEpisodes; i++) {
             trainedGeneration = trainer.trainGeneration(trainedGeneration);
         }
-        //to do: save weights
+
+        String fileName = startTime+"_"+trainer.getCurrentGeneration();
+
+
     }
 
     public void saveWeights(String path, NeuralNetwork pNetwork) {
