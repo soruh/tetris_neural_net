@@ -49,9 +49,9 @@ public class Layer {
 
     void randomize() {
         this.bias = (rng.nextDouble() * 2) - 1;
-        for (double[] values : weights) {
-            for (double value : values) {
-                value = (rng.nextDouble() * 2) - 1;
+        for (int i = 0; i < weights.length; i++) {
+            for (int j = 0; j < weights[i].length; j++) {
+                weights[i][j] = (rng.nextDouble() * 2) - 1;
             }
         }
     }

@@ -34,6 +34,8 @@ public class Main {
             networks[i].addLayer(new Layer(40, 6));
         }
         trainer = new GeneticTrainer(FitnessFunction.tetris, 0.1);
+
+        System.out.println("constructed Trainer with mutationRate: "+0.1+" pGenerationSize: "+pGenerationSize);
     }
 
     public void train(int pTrainingEpisodes) {
@@ -52,10 +54,7 @@ public class Main {
         }
 
         String fileName = startTime+"_"+trainer.getCurrentGeneration();
-
-
-        networks = trainedGeneration;
-        //TODO: save weights
+        this.saveWeights("./weights/" + fileName, trainedGeneration[0]);
     }
 
     public NeuralNetwork getBestNetwork() {
@@ -68,11 +67,12 @@ public class Main {
 
     public void saveWeights(String path, NeuralNetwork pNetwork) {
 
+
         String toWrite = "";
         double[] weights = pNetwork.getWeightsAsArray();
         toWrite += Arrays.toString(weights);
-        toWrite = toWrite.replace('[', ' ');
-        toWrite = toWrite.replace(']', ' ');
+        toWrite = toWrite.replace('[',' ');
+        toWrite = toWrite.replace(']',' ');
         toWrite = toWrite.trim();
 
         try {
@@ -83,13 +83,14 @@ public class Main {
             buffer.close();
             is.close();
         } catch (Exception e) {
-
+            System.err.println("failed to save file: "+e);
         }
 
         System.out.println("Speichern abgeschlossen.");
     }
 
-    public void loadWeights(String pfad, NeuralNetwork pNetwork) {
+    public void loadWeights(String pfad, NeuralNetwork pNetwork)
+    {
         String temp = "";
         try {
             FileReader is = new FileReader(pfad);
