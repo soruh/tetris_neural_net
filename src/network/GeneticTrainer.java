@@ -8,7 +8,7 @@ public class GeneticTrainer {
     private FitnessFunction func;
     private Random rng;
     private double mutationRate;
-    private long seed = 1;
+    private long seed = -420691337;
     private int currentGeneration = 0;
 
     public GeneticTrainer(FitnessFunction func, double mutationRate) {
@@ -20,7 +20,7 @@ public class GeneticTrainer {
 
     public NeuralNetwork[] trainGeneration(NeuralNetwork[] pGeneration) {
         double[] fitness = new double[pGeneration.length];
-        seed = rng.nextLong();
+        // seed = rng.nextLong();
 
         Thread[] threads = new Thread[pGeneration.length];
         for (int i = 0; i < pGeneration.length; i++) {
@@ -44,6 +44,14 @@ public class GeneticTrainer {
         }
 
         parallelSort(fitness, pGeneration);
+
+
+        /*
+        for(int i=0;i<fitness.length;i++){
+            System.out.println("fitness["+i+"]: "+fitness[i]);
+        }
+        */
+
         System.out.println("Fitness: " + fitness[0]);
         NeuralNetwork[] newGeneration = this.createNewGeneration(pGeneration);
 
@@ -54,7 +62,7 @@ public class GeneticTrainer {
 
     public NeuralNetwork[] createNewGeneration(NeuralNetwork[] pOldGeneration){
         NeuralNetwork[] newGeneration = new NeuralNetwork[pOldGeneration.length];
-        int alphaCutoff = (int)(pOldGeneration.length * ((double)2 / 10));
+        int alphaCutoff = (int)(pOldGeneration.length * ((double)1 / 10));
         int i = 0;
         for (; i < alphaCutoff; i++) {
             // System.out.println("alpha: i="+i);
@@ -79,6 +87,9 @@ public class GeneticTrainer {
 
                 NeuralNetwork[] children = crossover(rng.nextDouble(), pOldGeneration[j], pOldGeneration[k]);
 
+
+                if(rng.nextDouble() < mutationRate) mutate(children[0]);
+                if(rng.nextDouble() < mutationRate) mutate(children[1]);
 
                 newGeneration[i] = children[0];
                 newGeneration[i + 1] = children[1];
@@ -133,9 +144,14 @@ public class GeneticTrainer {
 
     public void mutate(NeuralNetwork pNetwork){
         double[] networkWeights;
+
         networkWeights = pNetwork.getWeightsAsArray();
-        int mutatedWeight = rng.nextInt(networkWeights.length);
-        networkWeights[mutatedWeight] = (rng.nextDouble() * 20) - 10;
+
+        for(int i=0;i<5;i++){
+            int mutatedWeight = rng.nextInt(networkWeights.length);
+            networkWeights[mutatedWeight] = (rng.nextDouble() * 20) - 10;
+        }
+
         pNetwork.setWeightsFromArray(networkWeights);
     }
 
@@ -156,7 +172,7 @@ public class GeneticTrainer {
 
             public int compareTo(Item i2) {
                 if(this.sortBy == i2.sortBy) return 0;
-                if(this.sortBy > i2.sortBy) return 1;
+                if(this.sortBy < i2.sortBy) return 1;
                 return -1;
             }
         }

@@ -36,7 +36,7 @@ public class Main {
             networks[i].addLayer(new Layer(40, 40));
             networks[i].addLayer(new Layer(40, 6));
         }
-        trainer = new GeneticTrainer(FitnessFunction.tetris, 0.1);
+        trainer = new GeneticTrainer(FitnessFunction.tetris, 0.5);
 
         System.out.println("constructed Trainer with mutationRate: "+0.1+" pGenerationSize: "+pGenerationSize);
     }
@@ -46,6 +46,7 @@ public class Main {
 
         for (int i = 0; i < pTrainingEpisodes; i++) {
             System.out.print("Generation: " + i + "; ");
+            System.out.print("Seed: " + getCurrentSeed() + "; ");
             trainedGeneration = trainer.trainGeneration(trainedGeneration);
 
             if(trainer.getCurrentGeneration()%10 == 0) this.saveWeights(trainedGeneration[0]);
